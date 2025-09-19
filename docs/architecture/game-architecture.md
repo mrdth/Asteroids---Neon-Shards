@@ -41,7 +41,9 @@ neon-asteroids/
 │  ├─ utils/                # math, rng, object pool, screen-wrap helpers
 │  └─ main.ts               # Phaser.Game config + scene registration
 ├─ tests/                   # vitest/jest for logic; Playwright (optional) for smoke
-├─ vite.config.ts           # Vite build (ES modules)
+├─ vite/
+|  ├─ config.dev.mjs        # Vite build (ES modules) dev
+|  └─ config.prod.mjs       # Vite build (ES modules) prod
 ├─ package.json
 └─ tsconfig.json
 ```
@@ -326,4 +328,3 @@ export interface System { init(scene: Phaser.Scene): void; update(dt: number): v
 ### Ready for Story Breakdown
 
 This architecture is implementation-ready. Next step: create development stories for **Wave Manager**, **Asteroid Splitter**, **Shard Magnetism**, **HUD**, **Summary & Persistence**, and **MetaHub Upgrade Application**.
-
