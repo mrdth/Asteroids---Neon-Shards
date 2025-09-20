@@ -19,13 +19,6 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     private bulletId: number = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        // Create a simple bullet sprite for now
-        const graphics = scene.add.graphics();
-        graphics.fillStyle(0x00ffff); // Neon cyan
-        graphics.fillRect(0, 0, 4, 8);
-        graphics.generateTexture("bullet-neon", 4, 8);
-        graphics.destroy();
-
         super(scene, x, y, "bullet-neon");
 
         this.gameBounds = ScreenWrap.getGameBounds(scene);
@@ -34,10 +27,12 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        // Configure physics body
+        // Configure physics body - adjust size based on actual sprite (48x48 but scale it down)
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setCollideWorldBounds(false);
-        body.setSize(4, 8);
+        // Scale down the bullet and set physics body to match
+        this.setScale(0.25); // Scale 48x48 down to 12x12
+        body.setSize(12, 12);
 
         // Set sprite properties
         this.setOrigin(0.5, 0.5);

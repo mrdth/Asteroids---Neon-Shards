@@ -133,9 +133,11 @@ export class WeaponSystem {
     }
 
     private onBulletFired(event: { bullet: Bullet; position: { x: number; y: number }; angle: number }): void {
-        // Handle bullet fired event (can add muzzle flash, sound, etc.)
-        // For now, just log for debugging
-        // console.log(`Bullet fired at (${event.position.x}, ${event.position.y})`);
+        // Play laser sound effect
+        this.scene.sound.play("laser-shot", {
+            volume: 0.3, // Keep it reasonable
+            rate: 1.0 + (Math.random() - 0.5) * 0.1 // Slight pitch variation for variety
+        });
     }
 
     public getStats(): {

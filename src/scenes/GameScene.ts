@@ -57,6 +57,10 @@ export class GameScene extends Phaser.Scene {
         endFrame: 4,
       },
     );
+
+    // Load weapon assets
+    this.load.image("bullet-neon", "assets/sprites/bullet-neon.png");
+    this.load.audio("laser-shot", "assets/audio/laser-shot.ogg");
   }
 
   create(): void {
