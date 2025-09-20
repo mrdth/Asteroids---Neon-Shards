@@ -10,6 +10,9 @@ export class GameScene extends Phaser.Scene {
   private asteroidManager!: AsteroidManager;
   private asteroidSpawner!: AsteroidSpawner;
   private gameLevel: number = 1;
+  private playerLives: number = 3;
+  private invulnerabilityTime: number = 0;
+  private livesText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "GameScene" });
@@ -77,6 +80,9 @@ export class GameScene extends Phaser.Scene {
     );
     this.asteroidManager.on("asteroid-split", this.onAsteroidSplit, this);
 
+    // Set up collision detection
+    this.setupCollisions();
+
     // Start the first wave
     this.startWave();
 
@@ -111,6 +117,17 @@ export class GameScene extends Phaser.Scene {
       color: "#cccccc",
     });
 
+    this.add.text(10, 75, "Collision: Ship vs Asteroids enabled", {
+      fontSize: "12px",
+      color: "#00ff00",
+    });
+
+    // Add lives display
+    this.livesText = this.add.text(10, 95, `Lives: ${this.playerLives}`, {
+      fontSize: "16px",
+      color: "#ffffff",
+    });
+
     // Add test controls for damaging asteroids
     this.setupTestControls();
   }
@@ -118,6 +135,17 @@ export class GameScene extends Phaser.Scene {
   update(time: number, delta: number): void {
     // Update asteroid systems
     this.asteroidManager.update(time, delta);
+
+    // Update invulnerability time
+    if (this.invulnerabilityTime > 0) {
+      this.invulnerabilityTime -= delta;
+
+      // Flash the ship during invulnerability
+      const flashRate = 200; // milliseconds
+      this.playerShip.setVisible(Math.floor(time / flashRate) % 2 === 0);
+    } else {
+      this.playerShip.setVisible(true);
+    }
 
     // Check for wave completion
     if (this.asteroidManager.getActiveCount() === 0) {
@@ -188,6 +216,86 @@ export class GameScene extends Phaser.Scene {
    */
   public getAsteroidManager(): AsteroidManager {
     return this.asteroidManager;
+  }
+
+  private setupCollisions(): void {
+    // Set up collision between player ship and asteroids
+    this.physics.add.overlap(
+      this.playerShip,
+      this.asteroidManager.getPhysicsGroup(),
+      this.handleShipAsteroidCollision,
+      undefined,
+      this
+    );
+  }
+
+  private handleShipAsteroidCollision(
+    ship: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    asteroid: Phaser.Types.Physics.Arcade.GameObjectWithBody
+  ): void {
+    // Don't process collision if ship is invulnerable
+    if (this.invulnerabilityTime > 0) {
+      return;
+    }
+
+    const asteroidObj = asteroid as Asteroid;
+
+    console.log(`Ship collided with ${asteroidObj.getSize()} asteroid!`);
+
+    // Damage the asteroid on collision
+    const collisionDamage = 30;
+    const isDestroyed = this.asteroidManager.damageAsteroid(asteroidObj, collisionDamage);
+
+    if (isDestroyed) {
+      console.log(`Asteroid destroyed by collision!`);
+    }
+
+    // Damage the ship
+    this.damageShip();
+  }
+
+  private damageShip(): void {
+    this.playerLives--;
+    this.livesText.setText(`Lives: ${this.playerLives}`);
+
+    // Grant invulnerability for 2 seconds
+    this.invulnerabilityTime = 2000;
+
+    console.log(`Ship took damage! Lives remaining: ${this.playerLives}`);
+
+    if (this.playerLives <= 0) {
+      this.gameOver();
+    } else {
+      // Push ship away from center to avoid immediate re-collision
+      const centerX = this.cameras.main.width / 2;
+      const centerY = this.cameras.main.height / 2;
+      this.playerShip.setPosition(centerX, centerY);
+      this.playerShip.body!.setVelocity(0, 0);
+    }
+  }
+
+  private gameOver(): void {
+    console.log("Game Over!");
+
+    // Display game over text
+    this.add.text(
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2,
+      "GAME OVER\nPress R to Restart",
+      {
+        fontSize: "32px",
+        color: "#ff0000",
+        align: "center"
+      }
+    ).setOrigin(0.5);
+
+    // Pause the game
+    this.physics.pause();
+
+    // Add restart functionality
+    this.input.keyboard?.once('keydown-R', () => {
+      this.scene.restart();
+    });
   }
 
   private setupTestControls(): void {
