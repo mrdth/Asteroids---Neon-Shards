@@ -1,0 +1,47 @@
+# EditorConfig helps maintain consistent coding styles
+# https://editorconfig.org
+
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# TypeScript / JavaScript / Node (ES modules)
+[*.{ts,tsx,js,jsx,mjs,cjs}]
+indent_style = space
+indent_size = 2
+
+# JSON, JSONC (package.json, tsconfig, etc.)
+[*.{json,jsonc}]
+indent_style = space
+indent_size = 2
+
+# YAML (CI configs, workflows)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# CSS and related styles
+[*.{css,scss,less}]
+indent_style = space
+indent_size = 2
+
+# Markdown: keep intentional trailing spaces
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefiles require tabs
+[Makefile]
+indent_style = tab
+
+# Shell scripts
+[*.sh]
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
