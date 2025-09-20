@@ -1,9 +1,15 @@
 import * as Phaser from "phaser";
 import { PlayerShip } from "../gameobjects/PlayerShip";
-import { PLAYER_CONFIG } from "../config/balance";
+import { PLAYER_CONFIG, AsteroidSize } from "../config/balance";
+import { AsteroidManager } from "../systems/AsteroidManager";
+import { AsteroidSpawner } from "../systems/AsteroidSpawner";
+import { Asteroid } from "../gameobjects/Asteroid";
 
 export class GameScene extends Phaser.Scene {
   private playerShip!: PlayerShip;
+  private asteroidManager!: AsteroidManager;
+  private asteroidSpawner!: AsteroidSpawner;
+  private gameLevel: number = 1;
 
   constructor() {
     super({ key: "GameScene" });
@@ -21,10 +27,22 @@ export class GameScene extends Phaser.Scene {
 
     this.playerShip = new PlayerShip(this, centerX, centerY, PLAYER_CONFIG);
 
+    // Initialize asteroid systems
+    this.asteroidManager = new AsteroidManager(this);
+    this.asteroidSpawner = new AsteroidSpawner(this, this.asteroidManager);
+
     // Set up event listeners for ship events
     this.events.on("ship-destroyed", this.onShipDestroyed, this);
     this.events.on("ship-thrust", this.onShipThrust, this);
     this.events.on("ship-fire", this.onShipFire, this);
+
+    // Set up asteroid event listeners
+    this.asteroidManager.on("asteroid-spawned", this.onAsteroidSpawned, this);
+    this.asteroidManager.on("asteroid-destroyed", this.onAsteroidDestroyed, this);
+    this.asteroidManager.on("asteroid-split", this.onAsteroidSplit, this);
+
+    // Start the first wave
+    this.startWave();
 
     // Enable gamepad support
     if (this.input.gamepad) {
@@ -54,8 +72,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
-    // The PlayerShip handles its own update through scene events
-    // This is called automatically by Phaser
+    // Update asteroid systems
+    this.asteroidManager.update(time, delta);
+
+    // Check for wave completion
+    if (this.asteroidManager.getActiveCount() === 0) {
+      this.onWaveComplete();
+    }
   }
 
   private onShipDestroyed(): void {
@@ -73,10 +96,53 @@ export class GameScene extends Phaser.Scene {
     // Later: create bullet, trigger fire sound/animation
   }
 
+  private startWave(): void {
+    const playerPos = { x: this.playerShip.x, y: this.playerShip.y };
+    const spawnedAsteroids = this.asteroidSpawner.spawnWaveByLevel(this.gameLevel, playerPos);
+
+    console.log(`Wave ${this.gameLevel} started with ${spawnedAsteroids.length} asteroids`);
+  }
+
+  private onWaveComplete(): void {
+    console.log(`Wave ${this.gameLevel} completed!`);
+    this.gameLevel++;
+
+    // Wait a moment before starting next wave
+    this.time.delayedCall(2000, () => {
+      this.startWave();
+    });
+  }
+
+  private onAsteroidSpawned(asteroid: Asteroid): void {
+    // console.log('Asteroid spawned:', asteroid.getSize());
+  }
+
+  private onAsteroidDestroyed(asteroid: Asteroid): void {
+    // console.log('Asteroid destroyed:', asteroid.getSize());
+  }
+
+  private onAsteroidSplit(parentAsteroid: Asteroid, splitData: any[]): void {
+    console.log(`Asteroid split: ${parentAsteroid.getSize()} into ${splitData.length} pieces`);
+  }
+
   /**
    * Get reference to player ship for other systems
    */
   public getPlayerShip(): PlayerShip {
     return this.playerShip;
+  }
+
+  /**
+   * Get reference to asteroid manager for other systems
+   */
+  public getAsteroidManager(): AsteroidManager {
+    return this.asteroidManager;
+  }
+
+  /**
+   * Get reference to asteroid spawner for other systems
+   */
+  public getAsteroidSpawner(): AsteroidSpawner {
+    return this.asteroidSpawner;
   }
 }

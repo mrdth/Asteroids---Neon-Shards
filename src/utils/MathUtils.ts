@@ -50,4 +50,25 @@ export class MathUtils {
         }
         return { x: x / mag, y: y / mag };
     }
+
+    /**
+     * Generate a random float between min and max (inclusive)
+     */
+    static randomFloat(min: number, max: number): number {
+        return Math.random() * (max - min) + min;
+    }
+
+    /**
+     * Generate a random integer between min and max (inclusive)
+     */
+    static randomInt(min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /**
+     * Calculate distance between two points
+     */
+    static distance(x1: number, y1: number, x2: number, y2: number): number {
+        return this.magnitude(x2 - x1, y2 - y1);
+    }
 }

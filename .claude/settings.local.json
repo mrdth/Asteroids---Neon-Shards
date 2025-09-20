@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run test:run:*)"
+      "Bash(npm run test:run:*)",
+      "Read(//home/mrdth/Development/Gamedev/Phaser/**)",
+      "Bash(npx vitest run:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 10s npm run dev-nolog)"
     ],
     "deny": [],
     "ask": []
