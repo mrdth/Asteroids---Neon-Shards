@@ -4,7 +4,7 @@
 **Story ID:** CGE-004
 **Priority:** High
 **Points:** 12
-**Status:** Draft
+**Status:** Completed
 
 ## Description
 

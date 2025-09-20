@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser';
 import { ObjectPool } from '../utils/ObjectPool';
 import { Asteroid, AsteroidData } from '../gameobjects/Asteroid';
 import { AsteroidSize, ASTEROID_SYSTEM_CONFIG } from '../config/balance';

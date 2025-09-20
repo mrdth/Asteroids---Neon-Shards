@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Asteroid, AsteroidData } from '../../src/gameobjects/Asteroid';
-import { AsteroidSize, ASTEROID_CONFIGS } from '../../src/config/balance';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {Asteroid} from '../../src/gameobjects/Asteroid';
+import {ASTEROID_CONFIGS, AsteroidSize} from '../../src/config/balance';
 
 // Mock Phaser
 vi.mock('phaser', () => ({
@@ -20,7 +20,7 @@ vi.mock('phaser', () => ({
                     this.x = x;
                     this.y = y;
                     this.body = {
-                        velocity: { x: 0, y: 0 },
+                        velocity: {x: 0, y: 0},
                         angularVelocity: 0,
                         setCircle: vi.fn(),
                         setBounce: vi.fn(),
@@ -69,12 +69,23 @@ vi.mock('phaser', () => ({
             y: number = 0;
             rotation: number = 0;
 
-            constructor() {}
+            constructor() {
+            }
 
-            setOrigin() { return this; }
-            setScale() { return this; }
-            setVisible() { return this; }
-            destroy() {}
+            setOrigin() {
+                return this;
+            }
+
+            setScale() {
+                return this;
+            }
+
+            setVisible() {
+                return this;
+            }
+
+            destroy() {
+            }
         }
     }
 }));
@@ -198,7 +209,7 @@ describe('Asteroid', () => {
         });
 
         it('should inherit velocity from parent with randomization', () => {
-            asteroid.initialize(100, 100, { x: 100, y: 50 });
+            asteroid.initialize(100, 100, {x: 100, y: 50});
 
             const splitData = asteroid.split();
 
@@ -218,7 +229,7 @@ describe('Asteroid', () => {
         it('should initialize with position and velocity', () => {
             const x = 200;
             const y = 150;
-            const velocity = { x: 50, y: -30 };
+            const velocity = {x: 50, y: -30};
             const angularVelocity = 45;
 
             asteroid.initialize(x, y, velocity, angularVelocity);
@@ -250,7 +261,7 @@ describe('Asteroid', () => {
         it('should export correct asteroid data', () => {
             const x = 150;
             const y = 200;
-            const velocity = { x: 75, y: -25 };
+            const velocity = {x: 75, y: -25};
             const angularVelocity = 30;
 
             asteroid.initialize(x, y, velocity, angularVelocity);

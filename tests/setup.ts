@@ -44,12 +44,25 @@ global.Phaser = {
         width = 32;
         height = 32;
         rotation = 0;
+        scale = 1;
+        frame = 0;
+        visible = true;
+        active = true;
         body = {
           velocity: { x: 0, y: 0 },
-          setVelocity: vi.fn(),
+          angularVelocity: 0,
+          setVelocity: vi.fn((x: number, y: number) => {
+            this.body.velocity.x = x;
+            this.body.velocity.y = y;
+          }),
+          setAngularVelocity: vi.fn((value: number) => {
+            this.body.angularVelocity = value;
+          }),
           setDrag: vi.fn(),
           setMaxVelocity: vi.fn(),
           setCollideWorldBounds: vi.fn(),
+          setCircle: vi.fn(),
+          setBounce: vi.fn(),
         };
 
         constructor(scene: any, x: number, y: number, texture: string) {
@@ -60,18 +73,44 @@ global.Phaser = {
         setOrigin = vi.fn();
         setDisplaySize = vi.fn();
         setRotation = vi.fn((rot: number) => { this.rotation = rot; });
-        setPosition = vi.fn((x: number, y: number) => { this.x = x; this.y = y; });
+        setPosition = vi.fn((x: number, y: number) => {
+          this.x = x;
+          this.y = y;
+          return this;
+        });
+        setScale = vi.fn((scale: number) => {
+          this.scale = scale;
+          return this;
+        });
+        setFrame = vi.fn((frame: number) => {
+          this.frame = frame;
+          return this;
+        });
+        setVisible = vi.fn((visible: boolean) => {
+          this.visible = visible;
+          return this;
+        });
+        setActive = vi.fn((active: boolean) => {
+          this.active = active;
+          return this;
+        });
         destroy = vi.fn();
       },
       Body: class MockBody {
         velocity = { x: 0, y: 0 };
+        angularVelocity = 0;
         setVelocity = vi.fn((x: number, y: number) => {
           this.velocity.x = x;
           this.velocity.y = y;
         });
+        setAngularVelocity = vi.fn((value: number) => {
+          this.angularVelocity = value;
+        });
         setDrag = vi.fn();
         setMaxVelocity = vi.fn();
         setCollideWorldBounds = vi.fn();
+        setCircle = vi.fn();
+        setBounce = vi.fn();
       },
     },
   },

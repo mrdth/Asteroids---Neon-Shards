@@ -30,6 +30,7 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         this.config = ASTEROID_CONFIGS[size];
         this.maxHealth = this.config.health;
         this.currentHealth = this.maxHealth;
+        this.isActive = true;
 
         // Add to scene
         scene.add.existing(this);
@@ -41,6 +42,8 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         // Initialize visual properties
         this.setScale(this.config.scale);
         this.setOrigin(0.5, 0.5);
+        this.setActive(true);
+        this.setVisible(true);
     }
 
     private setupPhysicsBody(): void {

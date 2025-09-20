@@ -11,6 +11,8 @@ export class ShardManager extends Phaser.Events.EventEmitter {
     private physicsGroup: Phaser.Physics.Arcade.Group;
     private nextShardId: number = 0;
     private config: ShardConfig;
+    private readonly onShardCollectedHandler: (event: { shard: Shard; value: number; position: { x: number; y: number } }) => void;
+    private readonly onShardExpiredHandler: (event: { shard: Shard; position: { x: number; y: number } }) => void;
 
     constructor(scene: Phaser.Scene, config: ShardConfig) {
         super();
@@ -40,9 +42,12 @@ export class ShardManager extends Phaser.Events.EventEmitter {
             config.maxActiveShards + 10 // Pool size larger than max active for efficiency
         );
 
+        this.onShardCollectedHandler = this.onShardCollected.bind(this);
+        this.onShardExpiredHandler = this.onShardExpired.bind(this);
+
         // Listen for shard events
-        scene.events.on("shard-collected", this.onShardCollected, this);
-        scene.events.on("shard-expired", this.onShardExpired, this);
+        scene.events.on("shard-collected", this.onShardCollectedHandler, this);
+        scene.events.on("shard-expired", this.onShardExpiredHandler, this);
     }
 
     public spawnShard(x: number, y: number): Shard | null {
@@ -197,7 +202,7 @@ export class ShardManager extends Phaser.Events.EventEmitter {
 
         // Remove all event listeners
         this.removeAllListeners();
-        this.scene.events.off("shard-collected", this.onShardCollected, this);
-        this.scene.events.off("shard-expired", this.onShardExpired, this);
+        this.scene.events.off("shard-collected", this.onShardCollectedHandler);
+        this.scene.events.off("shard-expired", this.onShardExpiredHandler);
     }
 }
