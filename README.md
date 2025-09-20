@@ -1,158 +1,260 @@
-# Phaser Vite TypeScript Template
+# 🚀 Asteroids: Neon Shards
 
-This is a Phaser 3 project template that uses Vite for bundling. It supports hot-reloading for quick development workflow, includes TypeScript support and scripts to generate production-ready builds.
+> A vaporwave-inspired roguelite reimagining of the classic Asteroids arcade game
 
-**[This Template is also available as a JavaScript version.](https://github.com/phaserjs/template-vite)**
+**Asteroids: Neon Shards** transforms the timeless space shooter into a modern roguelite experience. Blast through neon asteroids in stylized vaporwave aesthetic while collecting "Neon Shards" - a persistent currency that unlocks ship upgrades and abilities across runs.
 
-### Versions
+## 🎮 Game Overview
 
-This template has been updated for:
+**Genre:** Arcade Roguelite
+**Platform:** Web (Desktop & Mobile browsers)
+**Engine:** Phaser 3.70+ with TypeScript 5.0+
+**Status:** In Development
 
-- [Phaser 3.90.0](https://github.com/phaserjs/phaser)
-- [Vite 6.3.1](https://github.com/vitejs/vite)
-- [TypeScript 5.7.2](https://github.com/microsoft/TypeScript)
+### Core Game Loop
+1. **Enter** asteroid field in your neon-powered ship
+2. **Destroy** asteroids with precision laser weapons
+3. **Collect** Neon Shards dropped from destroyed asteroids
+4. **Survive** increasingly chaotic waves
+5. **Death** leads to upgrade opportunities
+6. **Upgrade** your ship with persistent Neon Shards
+7. **Restart** stronger for deeper runs
 
-![screenshot](screenshot.png)
+### Key Features
 
-## Requirements
+- 🎯 **Classic Asteroids Mechanics** - Momentum-based ship movement, asteroid splitting, screen wrapping
+- 💎 **Neon Shard Currency** - Collectible currency that persists between runs
+- 🔫 **Precision Weapon System** - Rate-limited laser weapons with satisfying feedback
+- 🌊 **Infinite Wave Progression** - Difficulty scales infinitely with smarter asteroid AI
+- 🛸 **Roguelite Upgrades** - Persistent ship improvements for weapons, shields, and mobility
+- 🎨 **Vaporwave Aesthetic** - Distinctive neon visual style with synthwave audio
+- ⚡ **Performance Optimized** - 60 FPS target with object pooling and efficient collision detection
 
-[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+## 🚀 Quick Start
 
-## Available Commands
+### Prerequisites
+- [Node.js](https://nodejs.org) (v16+ recommended)
+- Modern web browser with ES6+ support
+
+### Installation & Development
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd "Asteroids - Neon Shards"
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+The game will be available at `http://localhost:8080`
+
+### Production Build
+
+```bash
+# Create optimized build
+npm run build
+
+# The built game will be in the `dist` folder
+```
+
+## 🎮 How to Play
+
+### Controls
+
+| Input | Action |
+|-------|--------|
+| **W** / **↑** | Thrust forward |
+| **A** / **←** | Turn left |
+| **D** / **→** | Turn right |
+| **Space** / **S** | Fire weapon |
+| **F** | Debug: Damage nearest asteroid |
+
+### Gameplay Tips
+
+- 🎯 **Lead your shots** - Asteroids move unpredictably, aim where they're going
+- 💎 **Collect quickly** - Neon Shards expire after 4 seconds
+- 🧲 **Use magnetism** - Get within 160 pixels for automatic shard attraction
+- ⚡ **Manage fire rate** - Weapon is capped at 4 shots per second
+- 🌊 **Survive waves** - Each wave brings more asteroids with increased health
+
+## 🏗️ Project Structure
+
+```
+src/
+├── config/           # Game balance and configuration
+│   └── balance.ts    # Tunable game parameters
+├── core/             # Core game systems
+│   └── Game.ts       # Main game configuration
+├── scenes/           # Phaser game scenes
+│   └── GameScene.ts  # Main gameplay scene
+├── gameobjects/      # Game entity classes
+│   ├── PlayerShip.ts # Player-controlled ship
+│   ├── Asteroid.ts   # Destructible asteroid objects
+│   └── Bullet.ts     # Weapon projectiles
+├── systems/          # Modular game systems
+│   ├── InputSystem.ts        # Input handling
+│   ├── WeaponSystem.ts       # Weapon firing mechanics
+│   ├── BulletManager.ts      # Bullet lifecycle management
+│   ├── AsteroidManager.ts    # Asteroid spawning and physics
+│   └── AsteroidSpawner.ts    # Wave-based asteroid generation
+└── utils/            # Utility functions
+    ├── MathUtils.ts     # Mathematical helpers
+    ├── ObjectPool.ts    # Performance optimization
+    ├── ScreenWrap.ts    # Boundary wrapping logic
+    └── Timer.ts         # High-precision timing
+```
+
+## 🎨 Design Philosophy
+
+### Core Design Pillars
+
+1. **Player-First Fun** - Every decision prioritizes immediate enjoyment
+2. **Replayability Through Progression** - Meaningful upgrades drive long-term engagement
+3. **Distinct Aesthetic Identity** - Vaporwave style sets it apart from classic Asteroids
+4. **Lean Scope, High Polish** - Focused feature set with exceptional execution
+5. **Performance Excellence** - Smooth 60 FPS gameplay on all target platforms
+
+### Balance Philosophy
+
+- **Fire Rate Limiting** (4 shots/sec) prevents weapon spam while maintaining responsiveness
+- **Magnetic Shard Collection** (160px radius) creates risk/reward positioning decisions
+- **Progressive Scaling** (+20% HP, +5% speed per wave) ensures long-term challenge
+- **Persistent Progression** drives "just one more run" engagement
+
+## 🔧 Technical Details
+
+### Technology Stack
+
+- **Engine:** Phaser 3.70+ (Arcade Physics)
+- **Language:** TypeScript 5.0+ (strict mode)
+- **Build Tool:** Vite 6.3+ (ES modules, hot reload)
+- **Code Quality:** ESLint + Prettier + Husky
+- **Testing:** Vitest for unit tests
+- **Performance:** Object pooling, texture atlases, optimized collision detection
+
+### Performance Targets
+
+- 🎯 **Frame Rate:** 60 FPS sustained on desktop and mid-range mobile
+- ⚡ **Load Time:** <3 seconds initial boot
+- 💾 **Memory Usage:** <200MB peak memory consumption
+- 🔄 **Input Latency:** <100ms response time for all controls
+
+### Architecture Highlights
+
+- **Modular Systems** - Each game system is independent and testable
+- **Object Pooling** - Prevents garbage collection hitches during intense gameplay
+- **Event-Driven Communication** - Loose coupling between systems via Phaser events
+- **Data-Driven Balance** - All game parameters externalized to config files
+
+## 🧪 Development Status
+
+### ✅ Completed Features
+
+- **Player Ship Controls** - Momentum-based movement with screen wrapping
+- **Asteroid System** - Spawning, physics, damage states, and splitting mechanics
+- **Weapon System** - Rate-limited laser firing with bullet physics
+- **Collision Detection** - Ship-asteroid and bullet-asteroid interactions
+- **Wave Progression** - Infinite scaling difficulty with proper pacing
+- **Life System** - Player lives with invulnerability frames and game over
+
+### 🚧 In Development
+
+- **Neon Shards Collection** - Drop system with magnetic attraction (CGE-004)
+- **Score & HUD System** - Real-time score tracking and display
+- **Visual Effects** - Particle systems for explosions and impacts
+- **Audio Integration** - Sound effects and background music
+
+### 📋 Planned Features
+
+- **Meta-Progression Hub** - Upgrade tree for persistent ship improvements
+- **Vaporwave Visual Polish** - Enhanced neon aesthetics and post-processing
+- **Special Asteroid Types** - Glowing (boosts) and Corrupted (risk/reward) variants
+- **Mobile Optimization** - Touch controls and responsive UI
+- **Performance Optimization** - Advanced rendering and memory optimizations
+
+## 🧪 Testing
+
+### Running Tests
+
+```bash
+# Run unit tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+### Test Coverage Goals
+
+- **Systems Logic:** >90% coverage for game systems and mechanics
+- **Integration Testing:** Full scene and system interaction validation
+- **Performance Testing:** Frame rate and memory usage validation
+- **Manual Testing:** Gameplay feel and balance validation
+
+## 📋 Development Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm run dev` | Launch a development web server |
-| `npm run build` | Create a production build in the `dist` folder |
-| `npm run dev-nolog` | Launch a development web server without sending anonymous data (see "About log.js" below) |
-| `npm run build-nolog` | Create a production build in the `dist` folder without sending anonymous data (see "About log.js" below) |
+| `npm run dev` | Development server with hot reload |
+| `npm run build` | Production build with optimization |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | ESLint code quality checking |
+| `npm run lint:fix` | Auto-fix linting issues |
+| `npm test` | Run unit test suite |
+| `npm run type-check` | TypeScript type validation |
 
-## Writing Code
+## 🎯 Project Goals
 
-After cloning the repo, run `npm install` from your project directory. Then, you can start the local development server by running `npm run dev`.
+### Technical Validation
+- Prove Phaser 3 + TypeScript can deliver console-quality web games
+- Demonstrate effective object pooling and performance optimization
+- Validate event-driven architecture for complex game systems
 
-The local development server runs on `http://localhost:8080` by default. Please see the Vite documentation if you wish to change this, or add SSL support.
+### Game Design Validation
+- Modernize classic arcade mechanics for contemporary audiences
+- Balance immediate fun with long-term progression hooks
+- Create distinctive aesthetic identity within established genre
 
-Once the server is running you can edit any of the files in the `src` folder. Vite will automatically recompile your code and then reload the browser.
+### Development Process Validation
+- Test BMAD (story-driven development) methodology on real project
+- Validate AI-assisted development workflow for game creation
+- Demonstrate comprehensive documentation driving implementation
 
-## Template Project Structure
+## 🤝 Contributing
 
-We have provided a default project structure to get you started. This is as follows:
+This project uses a story-driven development approach with comprehensive documentation:
 
-## Template Project Structure
+1. **Game Design Document** - `docs/design/game-design-doc.md`
+2. **Technical Architecture** - `docs/architecture/game-architecture.md`
+3. **Development Stories** - `docs/stories/` (implementation-ready feature specifications)
 
-We have provided a default project structure to get you started:
+### Development Workflow
 
-| Path                         | Description                                                |
-|------------------------------|------------------------------------------------------------|
-| `index.html`                 | A basic HTML page to contain the game.                     |
-| `public/assets`              | Game sprites, audio, etc. Served directly at runtime.      |
-| `public/style.css`           | Global layout styles.                                      |
-| `src/main.ts`                | Application bootstrap.                                     |
-| `src/game`                   | Folder containing the game code.                           |
-| `src/game/main.ts`           | Game entry point: configures and starts the game.          |
-| `src/game/scenes`            | Folder with all Phaser game scenes.                        | 
+1. Review existing stories in `docs/stories/`
+2. Implement features according to story specifications
+3. Run tests to validate implementation
+4. Update documentation with any deviations
 
+## 📜 License
 
-## Handling Assets
+[Add appropriate license information]
 
-Vite supports loading assets via JavaScript module `import` statements.
+## 🙏 Acknowledgments
 
-This template provides support for both embedding assets and also loading them from a static folder. To embed an asset, you can import it at the top of the JavaScript file you are using it in:
+- **Phaser Community** - Excellent game engine and documentation
+- **Vaporwave Artists** - Aesthetic inspiration for visual design
+- **Classic Asteroids** - Timeless gameplay foundation
+- **Roguelite Genre** - Progression mechanics inspiration
 
-```js
-import logoImg from './assets/logo.png'
-```
+---
 
-To load static files such as audio files, videos, etc place them into the `public/assets` folder. Then you can use this path in the Loader calls within Phaser:
+**Built with ❤️ using Phaser 3, TypeScript, and modern web technologies**
 
-```js
-preload ()
-{
-    //  This is an example of an imported bundled image.
-    //  Remember to import it at the top of this file
-    this.load.image('logo', logoImg);
-
-    //  This is an example of loading a static image
-    //  from the public/assets folder:
-    this.load.image('background', 'assets/bg.png');
-}
-```
-
-When you issue the `npm run build` command, all static assets are automatically copied to the `dist/assets` folder.
-
-## Deploying to Production
-
-After you run the `npm run build` command, your code will be built into a single bundle and saved to the `dist` folder, along with any other assets your project imported, or stored in the public assets folder.
-
-In order to deploy your game, you will need to upload *all* of the contents of the `dist` folder to a public facing web server.
-
-## Customizing the Template
-
-### Vite
-
-If you want to customize your build, such as adding plugin (i.e. for loading CSS or fonts), you can modify the `vite/config.*.mjs` file for cross-project changes, or you can modify and/or create new configuration files and target them in specific npm tasks inside of `package.json`. Please see the [Vite documentation](https://vitejs.dev/) for more information.
-
-## About log.js
-
-If you inspect our node scripts you will see there is a file called `log.js`. This file makes a single silent API call to a domain called `gryzor.co`. This domain is owned by Phaser Studio Inc. The domain name is a homage to one of our favorite retro games.
-
-We send the following 3 pieces of data to this API: The name of the template being used (vue, react, etc). If the build was 'dev' or 'prod' and finally the version of Phaser being used.
-
-At no point is any personal data collected or sent. We don't know about your project files, device, browser or anything else. Feel free to inspect the `log.js` file to confirm this.
-
-Why do we do this? Because being open source means we have no visible metrics about which of our templates are being used. We work hard to maintain a large and diverse set of templates for Phaser developers and this is our small anonymous way to determine if that work is actually paying off, or not. In short, it helps us ensure we're building the tools for you.
-
-However, if you don't want to send any data, you can use these commands instead:
-
-Dev:
-
-```bash
-npm run dev-nolog
-```
-
-Build:
-
-```bash
-npm run build-nolog
-```
-
-Or, to disable the log entirely, simply delete the file `log.js` and remove the call to it in the `scripts` section of `package.json`:
-
-Before:
-
-```json
-"scripts": {
-    "dev": "node log.js dev & dev-template-script",
-    "build": "node log.js build & build-template-script"
-},
-```
-
-After:
-
-```json
-"scripts": {
-    "dev": "dev-template-script",
-    "build": "build-template-script"
-},
-```
-
-Either of these will stop `log.js` from running. If you do decide to do this, please could you at least join our Discord and tell us which template you're using! Or send us a quick email. Either will be super-helpful, thank you.
-
-## Join the Phaser Community!
-
-We love to see what developers like you create with Phaser! It really motivates us to keep improving. So please join our community and show-off your work 😄
-
-**Visit:** The [Phaser website](https://phaser.io) and follow on [Phaser Twitter](https://twitter.com/phaser_)<br />
-**Play:** Some of the amazing games [#madewithphaser](https://twitter.com/search?q=%23madewithphaser&src=typed_query&f=live)<br />
-**Learn:** [API Docs](https://newdocs.phaser.io), [Support Forum](https://phaser.discourse.group/) and [StackOverflow](https://stackoverflow.com/questions/tagged/phaser-framework)<br />
-**Discord:** Join us on [Discord](https://discord.gg/phaser)<br />
-**Code:** 2000+ [Examples](https://labs.phaser.io)<br />
-**Read:** The [Phaser World](https://phaser.io/community/newsletter) Newsletter<br />
-
-Created by [Phaser Studio](mailto:support@phaser.io). Powered by coffee, anime, pixels and love.
-
-The Phaser logo and characters are &copy; 2011 - 2025 Phaser Studio Inc.
-
-All rights reserved.
+*For the love of retro gaming and neon aesthetics* ✨
