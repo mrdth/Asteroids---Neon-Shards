@@ -17,14 +17,13 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
     private currentHealth: number;
     private maxHealth: number;
     private size: AsteroidSize;
-    private crackSprites: Phaser.GameObjects.Sprite[] = [];
-    private lastCrackState: number = -1;
+    private lastDamageFrame: number = 0;
     private isActive: boolean = false;
     private id: number;
     private static nextId: number = 1;
 
     constructor(scene: Phaser.Scene, x: number = 0, y: number = 0, size: AsteroidSize = AsteroidSize.LARGE) {
-        super(scene, x, y, `asteroid-${size}`);
+        super(scene, x, y, `asteroids-${size}`, 0); // Start with frame 0 (100% health)
 
         this.id = Asteroid.nextId++;
         this.size = size;
@@ -42,9 +41,6 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         // Initialize visual properties
         this.setScale(this.config.scale);
         this.setOrigin(0.5, 0.5);
-
-        // Initialize crack sprites (they'll be positioned when needed)
-        this.initializeCrackSprites();
     }
 
     private setupPhysicsBody(): void {
@@ -59,21 +55,11 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    private initializeCrackSprites(): void {
-        // Create crack sprites for each damage threshold
-        for (let i = 0; i < ASTEROID_SYSTEM_CONFIG.crackThresholds.length; i++) {
-            const crackSprite = this.scene.add.sprite(0, 0, `asteroid-${this.size}-crack-${i + 1}`);
-            crackSprite.setOrigin(0.5, 0.5);
-            crackSprite.setScale(this.config.scale);
-            crackSprite.setVisible(false);
-            this.crackSprites.push(crackSprite);
-        }
-    }
 
     public initialize(x: number, y: number, velocity?: { x: number; y: number }, angularVelocity?: number): void {
         this.setPosition(x, y);
         this.currentHealth = this.maxHealth;
-        this.lastCrackState = -1;
+        this.lastDamageFrame = 0;
         this.isActive = true;
 
         // Set random velocity if not provided
@@ -93,7 +79,7 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         // Reset visual state
         this.setVisible(true);
         this.setActive(true);
-        this.updateCrackState();
+        this.updateDamageFrame();
     }
 
     private setRandomVelocity(): void {
@@ -114,7 +100,7 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         if (!this.isActive) return false;
 
         this.currentHealth -= damage;
-        this.updateCrackState();
+        this.updateDamageFrame();
 
         if (this.currentHealth <= 0) {
             this.currentHealth = 0;
@@ -202,42 +188,31 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         // Handle screen wrapping
         const bounds = ScreenWrap.getGameBounds(this.scene);
         ScreenWrap.wrap(this, bounds);
-
-        // Update crack sprite positions
-        this.updateCrackSpritePositions();
     }
 
-    private updateCrackState(): void {
-        const damagePercent = 1 - (this.currentHealth / this.maxHealth);
-        let newCrackState = -1;
+    private updateDamageFrame(): void {
+        const healthPercent = this.currentHealth / this.maxHealth;
+        let newFrame = 0;
 
-        // Determine which crack state should be visible
-        for (let i = 0; i < ASTEROID_SYSTEM_CONFIG.crackThresholds.length; i++) {
-            if (damagePercent >= ASTEROID_SYSTEM_CONFIG.crackThresholds[i]) {
-                newCrackState = i;
-            }
+        // Map health percentage to sprite frames
+        // 100% = frame 0, 80% = frame 1, 60% = frame 2, 40% = frame 3, 20% = frame 4
+        if (healthPercent > 0.8) {
+            newFrame = 0; // 100% health
+        } else if (healthPercent > 0.6) {
+            newFrame = 1; // 80% health
+        } else if (healthPercent > 0.4) {
+            newFrame = 2; // 60% health
+        } else if (healthPercent > 0.2) {
+            newFrame = 3; // 40% health
+        } else {
+            newFrame = 4; // 20% health or less
         }
 
-        // Update crack visibility if state changed
-        if (newCrackState !== this.lastCrackState) {
-            // Hide all cracks first
-            this.crackSprites.forEach(sprite => sprite.setVisible(false));
-
-            // Show appropriate crack sprite
-            if (newCrackState >= 0 && newCrackState < this.crackSprites.length) {
-                this.crackSprites[newCrackState].setVisible(true);
-            }
-
-            this.lastCrackState = newCrackState;
+        // Update frame if it changed
+        if (newFrame !== this.lastDamageFrame) {
+            this.setFrame(newFrame);
+            this.lastDamageFrame = newFrame;
         }
-    }
-
-    private updateCrackSpritePositions(): void {
-        this.crackSprites.forEach(sprite => {
-            sprite.x = this.x;
-            sprite.y = this.y;
-            sprite.rotation = this.rotation;
-        });
     }
 
     public reset(): void {
@@ -245,10 +220,10 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(false);
         this.setActive(false);
         this.currentHealth = this.maxHealth;
-        this.lastCrackState = -1;
+        this.lastDamageFrame = 0;
 
-        // Hide all crack sprites
-        this.crackSprites.forEach(sprite => sprite.setVisible(false));
+        // Reset to full health frame
+        this.setFrame(0);
 
         // Reset physics
         if (this.body) {
@@ -258,10 +233,6 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
     }
 
     public destroy(): void {
-        // Clean up crack sprites
-        this.crackSprites.forEach(sprite => sprite.destroy());
-        this.crackSprites = [];
-
         super.destroy();
     }
 
