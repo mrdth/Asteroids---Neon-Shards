@@ -19,6 +19,7 @@ Asteroids are the central game mechanic - they define the challenge, create the 
 ## Acceptance Criteria
 
 ### Functional Requirements
+
 - [ ] Asteroids spawn at safe distance from player with random velocity and spin
 - [ ] Three size types: Large (100 HP), Medium (50 HP), Small (20 HP) with base values
 - [ ] Large asteroids split into 2-3 medium asteroids when destroyed
@@ -30,6 +31,7 @@ Asteroids are the central game mechanic - they define the challenge, create the 
 - [ ] Split asteroids inherit partial velocity from parent with added randomization
 
 ### Technical Requirements
+
 - [ ] Code follows TypeScript strict mode standards
 - [ ] Maintains 60 FPS with up to 20 asteroids on screen simultaneously
 - [ ] No memory leaks during asteroid creation/destruction cycles
@@ -39,6 +41,7 @@ Asteroids are the central game mechanic - they define the challenge, create the 
 - [ ] Screen-wrap utility integration for boundary handling
 
 ### Game Design Requirements
+
 - [ ] Base health values match GDD: Large 100, Medium 50, Small 20
 - [ ] Movement speeds match GDD: Large 60, Medium 90, Small 130 units/sec
 - [ ] Spin rates within GDD range: -60 to +60 degrees/sec
@@ -71,133 +74,133 @@ Asteroids are the central game mechanic - they define the challenge, create the 
 ```typescript
 // Asteroid size enumeration
 enum AsteroidSize {
-    LARGE = 'large',
-    MEDIUM = 'medium',
-    SMALL = 'small'
+  LARGE = "large",
+  MEDIUM = "medium",
+  SMALL = "small",
 }
 
 // Asteroid configuration per size
 interface AsteroidConfig {
-    health: number;
-    speed: number;
-    splitCount: [number, number]; // min/max splits
-    scale: number;
-    spinRange: [number, number]; // degrees/sec
+  health: number;
+  speed: number;
+  splitCount: [number, number]; // min/max splits
+  scale: number;
+  spinRange: [number, number]; // degrees/sec
 }
 
 // Asteroid data interface
 interface AsteroidData {
-    id: number;
-    size: AsteroidSize;
-    health: number;
-    maxHealth: number;
-    velocity: { x: number; y: number };
-    angularVelocity: number;
-    position: { x: number; y: number };
+  id: number;
+  size: AsteroidSize;
+  health: number;
+  maxHealth: number;
+  velocity: { x: number; y: number };
+  angularVelocity: number;
+  position: { x: number; y: number };
 }
 
 // Main Asteroid class
 class Asteroid extends Phaser.Physics.Arcade.Sprite {
-    private config: AsteroidConfig;
-    private currentHealth: number;
-    private maxHealth: number;
-    private size: AsteroidSize;
-    private crackSprites: Phaser.GameObjects.Sprite[];
-    private lastCrackState: number;
+  private config: AsteroidConfig;
+  private currentHealth: number;
+  private maxHealth: number;
+  private size: AsteroidSize;
+  private crackSprites: Phaser.GameObjects.Sprite[];
+  private lastCrackState: number;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, size: AsteroidSize) {
-        super(scene, x, y, `asteroid-${size}`);
-        // Initialize physics body, health, crack states
-    }
+  constructor(scene: Phaser.Scene, x: number, y: number, size: AsteroidSize) {
+    super(scene, x, y, `asteroid-${size}`);
+    // Initialize physics body, health, crack states
+  }
 
-    public takeDamage(damage: number): boolean {
-        // Reduce health, update crack visuals, return true if destroyed
-    }
+  public takeDamage(damage: number): boolean {
+    // Reduce health, update crack visuals, return true if destroyed
+  }
 
-    public split(): AsteroidData[] {
-        // Generate split data for smaller asteroids, return empty if small
-    }
+  public split(): AsteroidData[] {
+    // Generate split data for smaller asteroids, return empty if small
+  }
 
-    public update(dt: number): void {
-        // Handle movement, screen wrapping, rotation
-    }
+  public update(dt: number): void {
+    // Handle movement, screen wrapping, rotation
+  }
 
-    private updateCrackState(): void {
-        // Show/hide crack sprites based on damage percentage
-    }
+  private updateCrackState(): void {
+    // Show/hide crack sprites based on damage percentage
+  }
 
-    private calculateSplitVelocities(): { x: number; y: number }[] {
-        // Generate velocities for split asteroids with inheritance + randomization
-    }
+  private calculateSplitVelocities(): { x: number; y: number }[] {
+    // Generate velocities for split asteroids with inheritance + randomization
+  }
 }
 
 // Asteroid spawner system
 class AsteroidSpawner {
-    private scene: Phaser.Scene;
-    private asteroidManager: AsteroidManager;
-    private safeSpawnRadius: number;
+  private scene: Phaser.Scene;
+  private asteroidManager: AsteroidManager;
+  private safeSpawnRadius: number;
 
-    constructor(scene: Phaser.Scene, manager: AsteroidManager) {
-        // Initialize spawning system
-    }
+  constructor(scene: Phaser.Scene, manager: AsteroidManager) {
+    // Initialize spawning system
+  }
 
-    public spawnWave(count: number, playerPos: { x: number; y: number }): Asteroid[] {
-        // Spawn asteroids at safe distance from player
-    }
+  public spawnWave(count: number, playerPos: { x: number; y: number }): Asteroid[] {
+    // Spawn asteroids at safe distance from player
+  }
 
-    public spawnSplits(parentData: AsteroidData, splitData: AsteroidData[]): Asteroid[] {
-        // Create split asteroids from parent destruction
-    }
+  public spawnSplits(parentData: AsteroidData, splitData: AsteroidData[]): Asteroid[] {
+    // Create split asteroids from parent destruction
+  }
 
-    private findSafeSpawnPosition(playerPos: { x: number; y: number }): { x: number; y: number } {
-        // Calculate spawn position outside safe radius
-    }
+  private findSafeSpawnPosition(playerPos: { x: number; y: number }): { x: number; y: number } {
+    // Calculate spawn position outside safe radius
+  }
 }
 
 // Asteroid pool manager
 class AsteroidManager {
-    private pools: Map<AsteroidSize, ObjectPool<Asteroid>>;
-    private activeAsteroids: Set<Asteroid>;
-    private maxActiveCount: number = 20;
+  private pools: Map<AsteroidSize, ObjectPool<Asteroid>>;
+  private activeAsteroids: Set<Asteroid>;
+  private maxActiveCount: number = 20;
 
-    constructor(scene: Phaser.Scene) {
-        // Initialize object pools for each size
-    }
+  constructor(scene: Phaser.Scene) {
+    // Initialize object pools for each size
+  }
 
-    public getAsteroid(size: AsteroidSize, x: number, y: number): Asteroid {
-        // Get asteroid from pool or create new one
-    }
+  public getAsteroid(size: AsteroidSize, x: number, y: number): Asteroid {
+    // Get asteroid from pool or create new one
+  }
 
-    public returnAsteroid(asteroid: Asteroid): void {
-        // Return asteroid to pool for reuse
-    }
+  public returnAsteroid(asteroid: Asteroid): void {
+    // Return asteroid to pool for reuse
+  }
 
-    public getActiveCount(): number {
-        // Return current active asteroid count
-    }
+  public getActiveCount(): number {
+    // Return current active asteroid count
+  }
 
-    public update(dt: number): void {
-        // Update all active asteroids
-    }
+  public update(dt: number): void {
+    // Update all active asteroids
+  }
 }
 
 // Generic object pool utility
 class ObjectPool<T> {
-    private pool: T[];
-    private createFn: () => T;
-    private resetFn: (obj: T) => void;
+  private pool: T[];
+  private createFn: () => T;
+  private resetFn: (obj: T) => void;
 
-    constructor(createFn: () => T, resetFn: (obj: T) => void, initialSize: number = 10) {
-        // Initialize object pool with creation and reset functions
-    }
+  constructor(createFn: () => T, resetFn: (obj: T) => void, initialSize: number = 10) {
+    // Initialize object pool with creation and reset functions
+  }
 
-    public get(): T {
-        // Get object from pool or create new one
-    }
+  public get(): T {
+    // Get object from pool or create new one
+  }
 
-    public return(obj: T): void {
-        // Return object to pool for reuse
-    }
+  public return(obj: T): void {
+    // Return object to pool for reuse
+  }
 }
 ```
 

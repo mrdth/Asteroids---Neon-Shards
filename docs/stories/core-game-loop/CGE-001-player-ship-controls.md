@@ -17,6 +17,7 @@ The ship uses momentum-based thrust with friction dampening (not instant movemen
 ## Acceptance Criteria
 
 ### Functional Requirements
+
 - [ ] Ship responds to thrust input with momentum-based acceleration
 - [ ] Ship rotates left/right with smooth angular velocity
 - [ ] Ship movement maintains momentum when thrust is released
@@ -27,6 +28,7 @@ The ship uses momentum-based thrust with friction dampening (not instant movemen
 - [ ] Movement system works consistently at different frame rates
 
 ### Technical Requirements
+
 - [ ] Code follows TypeScript strict mode standards
 - [ ] Maintains 60 FPS on target devices
 - [ ] No memory leaks or performance degradation
@@ -36,6 +38,7 @@ The ship uses momentum-based thrust with friction dampening (not instant movemen
 - [ ] Screen-wrap helper is reusable for other game objects
 
 ### Game Design Requirements
+
 - [ ] Thrust power matches GDD specification (220 units/sec²)
 - [ ] Turn speed matches GDD specification (210 degrees/sec)
 - [ ] Friction coefficient matches GDD specification (0.98 per frame)
@@ -66,65 +69,65 @@ The ship uses momentum-based thrust with friction dampening (not instant movemen
 ```typescript
 // Input intent interface
 interface IntentInput {
-    thrust: number;      // 0-1 intensity
-    turn: number;        // -1 to 1 (left/right)
-    fire: boolean;       // trigger state
+  thrust: number; // 0-1 intensity
+  turn: number; // -1 to 1 (left/right)
+  fire: boolean; // trigger state
 }
 
 // Player ship configuration
 interface PlayerConfig {
-    thrust: number;      // acceleration force
-    turnSpeed: number;   // angular velocity degrees/sec
-    friction: number;    // velocity damping coefficient
-    maxSpeed: number;    // velocity clamp
+  thrust: number; // acceleration force
+  turnSpeed: number; // angular velocity degrees/sec
+  friction: number; // velocity damping coefficient
+  maxSpeed: number; // velocity clamp
 }
 
 // PlayerShip class
 class PlayerShip extends Phaser.Physics.Arcade.Sprite {
-    private config: PlayerConfig;
-    private inputSystem: InputSystem;
+  private config: PlayerConfig;
+  private inputSystem: InputSystem;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig) {
-        super(scene, x, y, 'ship');
-        // Setup physics body, input handling, sprite configuration
-    }
+  constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig) {
+    super(scene, x, y, "ship");
+    // Setup physics body, input handling, sprite configuration
+  }
 
-    public update(dt: number): void {
-        // Process input, apply physics, handle screen wrapping
-    }
+  public update(dt: number): void {
+    // Process input, apply physics, handle screen wrapping
+  }
 
-    private applyThrust(intensity: number, dt: number): void {
-        // Calculate thrust vector based on rotation and apply to velocity
-    }
+  private applyThrust(intensity: number, dt: number): void {
+    // Calculate thrust vector based on rotation and apply to velocity
+  }
 
-    private applyRotation(turnInput: number, dt: number): void {
-        // Apply angular velocity based on input
-    }
+  private applyRotation(turnInput: number, dt: number): void {
+    // Apply angular velocity based on input
+  }
 
-    private applyFriction(dt: number): void {
-        // Reduce velocity using friction coefficient
-    }
+  private applyFriction(dt: number): void {
+    // Reduce velocity using friction coefficient
+  }
 }
 
 // Input system interface
 class InputSystem {
-    private keyboard: Phaser.Input.Keyboard.KeyboardPlugin;
-    private gamepad?: Phaser.Input.Gamepad.Gamepad;
+  private keyboard: Phaser.Input.Keyboard.KeyboardPlugin;
+  private gamepad?: Phaser.Input.Gamepad.Gamepad;
 
-    constructor(scene: Phaser.Scene) {
-        // Initialize input sources
-    }
+  constructor(scene: Phaser.Scene) {
+    // Initialize input sources
+  }
 
-    public getIntent(): IntentInput {
-        // Combine input sources into normalized intent
-    }
+  public getIntent(): IntentInput {
+    // Combine input sources into normalized intent
+  }
 }
 
 // Screen wrap utility
 class ScreenWrap {
-    public static wrap(object: Phaser.GameObjects.GameObject, bounds: Phaser.Geom.Rectangle): void {
-        // Handle screen boundary wrapping for any game object
-    }
+  public static wrap(object: Phaser.GameObjects.GameObject, bounds: Phaser.Geom.Rectangle): void {
+    // Handle screen boundary wrapping for any game object
+  }
 }
 ```
 

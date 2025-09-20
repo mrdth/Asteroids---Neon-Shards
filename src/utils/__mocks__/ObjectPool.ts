@@ -8,7 +8,7 @@ export class ObjectPool<T> {
     createFn: () => T,
     resetFn: (obj: T) => void,
     activeFn?: (obj: T) => void,
-    initialSize: number = 10
+    initialSize = 10
   ) {
     this.createFn = createFn;
     this.resetFn = resetFn;

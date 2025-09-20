@@ -21,6 +21,7 @@ The implementation includes size-based shard yields, wave-based scaling bonuses,
 ## Acceptance Criteria
 
 ### Functional Requirements
+
 - [ ] Shards automatically spawn at destroyed asteroid positions with correct yield amounts
 - [ ] Large asteroids drop 5 shards, medium asteroids drop 3 shards, small asteroids drop 1 shard
 - [ ] Shard yield increases by +5% per wave (scaling with game progression)
@@ -33,6 +34,7 @@ The implementation includes size-based shard yields, wave-based scaling bonuses,
 - [ ] Multiple shards can be collected simultaneously without performance issues
 
 ### Technical Requirements
+
 - [ ] Code follows TypeScript strict mode standards with proper type safety
 - [ ] Maintains 60 FPS with 20+ active shards and magnetic physics calculations
 - [ ] Object pooling prevents memory allocation during shard spawning/collection cycles
@@ -43,6 +45,7 @@ The implementation includes size-based shard yields, wave-based scaling bonuses,
 - [ ] Integration with existing GameScene update loop without affecting other system performance
 
 ### Game Design Requirements
+
 - [ ] Shard collection feels immediately rewarding with satisfying visual and audio feedback
 - [ ] Magnetic radius (160 pixels) creates tactical decisions about risk vs. reward positioning
 - [ ] Lifespan tension (4 seconds) encourages active collection without feeling punitive
@@ -76,196 +79,214 @@ The implementation includes size-based shard yields, wave-based scaling bonuses,
 ```typescript
 // Shard configuration interface
 interface ShardConfig {
-    baseYield: {
-        large: number;      // Base shards from large asteroids (5)
-        medium: number;     // Base shards from medium asteroids (3)
-        small: number;      // Base shards from small asteroids (1)
-    };
-    lifespanMs: number;         // Shard lifespan in milliseconds (4000)
-    magnetRadius: number;       // Magnetic attraction radius in pixels (160)
-    magnetForce: number;        // Magnetic acceleration strength (300)
-    scalingPerWave: number;     // Yield increase per wave (+5% = 0.05)
-    warningTimeMs: number;      // Time before expiration to show warning (1000)
-    collectionRadius: number;   // Player collision radius for collection (24)
+  baseYield: {
+    large: number; // Base shards from large asteroids (5)
+    medium: number; // Base shards from medium asteroids (3)
+    small: number; // Base shards from small asteroids (1)
+  };
+  lifespanMs: number; // Shard lifespan in milliseconds (4000)
+  magnetRadius: number; // Magnetic attraction radius in pixels (160)
+  magnetForce: number; // Magnetic acceleration strength (300)
+  scalingPerWave: number; // Yield increase per wave (+5% = 0.05)
+  warningTimeMs: number; // Time before expiration to show warning (1000)
+  collectionRadius: number; // Player collision radius for collection (24)
 }
 
 // Shard data interface
 interface ShardData {
-    id: number;
-    value: number;
-    position: { x: number; y: number };
-    timeToLive: number;
-    sourceAsteroidSize: AsteroidSize;
-    waveNumber: number;
-    isInMagneticRange: boolean;
+  id: number;
+  value: number;
+  position: { x: number; y: number };
+  timeToLive: number;
+  sourceAsteroidSize: AsteroidSize;
+  waveNumber: number;
+  isInMagneticRange: boolean;
 }
 
 // Main Shard class
 class Shard extends Phaser.Physics.Arcade.Sprite {
-    private value: number;
-    private timeToLive: number;
-    private initialLifetime: number;
-    private sourceSize: AsteroidSize;
-    private waveNumber: number;
-    private magneticTarget: { x: number; y: number } | null;
-    private isInMagneticRange: boolean;
-    private warningStarted: boolean;
+  private value: number;
+  private timeToLive: number;
+  private initialLifetime: number;
+  private sourceSize: AsteroidSize;
+  private waveNumber: number;
+  private magneticTarget: { x: number; y: number } | null;
+  private isInMagneticRange: boolean;
+  private warningStarted: boolean;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'shard-neon');
-        // Initialize physics body, visual states, and magnetic properties
-    }
+  constructor(scene: Phaser.Scene, x: number, y: number) {
+    super(scene, x, y, "shard-neon");
+    // Initialize physics body, visual states, and magnetic properties
+  }
 
-    public spawn(x: number, y: number, sourceSize: AsteroidSize, waveNumber: number, config: ShardConfig): void {
-        // Calculate value with wave scaling, set position, start lifespan timer
-    }
+  public spawn(
+    x: number,
+    y: number,
+    sourceSize: AsteroidSize,
+    waveNumber: number,
+    config: ShardConfig
+  ): void {
+    // Calculate value with wave scaling, set position, start lifespan timer
+  }
 
-    public update(dt: number, playerPosition: { x: number; y: number }, config: ShardConfig): void {
-        // Update lifespan, check magnetic range, apply magnetic force, handle expiration warning
-    }
+  public update(dt: number, playerPosition: { x: number; y: number }, config: ShardConfig): void {
+    // Update lifespan, check magnetic range, apply magnetic force, handle expiration warning
+  }
 
-    public applyMagneticForce(targetX: number, targetY: number, force: number): void {
-        // Calculate and apply physics force toward magnetic target
-    }
+  public applyMagneticForce(targetX: number, targetY: number, force: number): void {
+    // Calculate and apply physics force toward magnetic target
+  }
 
-    public getValue(): number {
-        // Return shard value for score calculation
-    }
+  public getValue(): number {
+    // Return shard value for score calculation
+  }
 
-    public collect(): number {
-        // Mark as collected, trigger collection effects, return value
-    }
+  public collect(): number {
+    // Mark as collected, trigger collection effects, return value
+  }
 
-    private calculateScaledValue(baseValue: number, waveNumber: number, scalingRate: number): number {
-        // Apply wave-based scaling to shard value
-    }
+  private calculateScaledValue(baseValue: number, waveNumber: number, scalingRate: number): number {
+    // Apply wave-based scaling to shard value
+  }
 
-    private startExpirationWarning(): void {
-        // Begin visual warning animation for imminent expiration
-    }
+  private startExpirationWarning(): void {
+    // Begin visual warning animation for imminent expiration
+  }
 
-    private isPlayerInMagneticRange(playerX: number, playerY: number, radius: number): boolean {
-        // Optimized distance check for magnetic activation
-    }
+  private isPlayerInMagneticRange(playerX: number, playerY: number, radius: number): boolean {
+    // Optimized distance check for magnetic activation
+  }
 }
 
 // Shard pool manager and spawning system
 class ShardManager extends Phaser.Events.EventEmitter {
-    private scene: Phaser.Scene;
-    private shardPool: ObjectPool<Shard>;
-    private activeShards: Set<Shard>;
-    private maxActiveShards: number;
-    private config: ShardConfig;
-    private currentWave: number;
+  private scene: Phaser.Scene;
+  private shardPool: ObjectPool<Shard>;
+  private activeShards: Set<Shard>;
+  private maxActiveShards: number;
+  private config: ShardConfig;
+  private currentWave: number;
 
-    constructor(scene: Phaser.Scene, config: ShardConfig, maxShards: number = 50) {
-        // Initialize shard object pool and tracking systems
-    }
+  constructor(scene: Phaser.Scene, config: ShardConfig, maxShards: number = 50) {
+    // Initialize shard object pool and tracking systems
+  }
 
-    public spawnShardsFromAsteroid(asteroid: Asteroid, waveNumber: number): Shard[] {
-        // Calculate yield, spawn appropriate number of shards at asteroid position
-    }
+  public spawnShardsFromAsteroid(asteroid: Asteroid, waveNumber: number): Shard[] {
+    // Calculate yield, spawn appropriate number of shards at asteroid position
+  }
 
-    public update(dt: number, playerPosition: { x: number; y: number }): void {
-        // Update all active shards, handle magnetism, check collections, manage expiration
-    }
+  public update(dt: number, playerPosition: { x: number; y: number }): void {
+    // Update all active shards, handle magnetism, check collections, manage expiration
+  }
 
-    public checkPlayerCollections(playerBounds: Phaser.Geom.Rectangle): number {
-        // Detect shard-player collisions and return total value collected
-    }
+  public checkPlayerCollections(playerBounds: Phaser.Geom.Rectangle): number {
+    // Detect shard-player collisions and return total value collected
+  }
 
-    public getActiveShard(): Shard | null {
-        // Get shard from pool or return null if max reached
-    }
+  public getActiveShard(): Shard | null {
+    // Get shard from pool or return null if max reached
+  }
 
-    public returnShard(shard: Shard): void {
-        // Return shard to pool and remove from active tracking
-    }
+  public returnShard(shard: Shard): void {
+    // Return shard to pool and remove from active tracking
+  }
 
-    private calculateShardYield(asteroidSize: AsteroidSize, waveNumber: number): number {
-        // Apply base yield and wave scaling to determine spawn count
-    }
+  private calculateShardYield(asteroidSize: AsteroidSize, waveNumber: number): number {
+    // Apply base yield and wave scaling to determine spawn count
+  }
 
-    private createShardSpread(centerX: number, centerY: number, count: number): { x: number; y: number }[] {
-        // Generate spread pattern for multiple shards from single asteroid
-    }
+  private createShardSpread(
+    centerX: number,
+    centerY: number,
+    count: number
+  ): { x: number; y: number }[] {
+    // Generate spread pattern for multiple shards from single asteroid
+  }
 
-    public getTotalActiveShards(): number {
-        // Return current number of active shards
-    }
+  public getTotalActiveShards(): number {
+    // Return current number of active shards
+  }
 
-    public getShardStats(): { active: number; collected: number; expired: number } {
-        // Return statistics for debugging and optimization
-    }
+  public getShardStats(): { active: number; collected: number; expired: number } {
+    // Return statistics for debugging and optimization
+  }
 }
 
 // Score tracking and persistent shard management
 class ScoreSystem extends Phaser.Events.EventEmitter {
-    private currentRunScore: number;
-    private currentRunShards: number;
-    private persistentShards: number;
-    private scoreText: Phaser.GameObjects.Text;
-    private shardText: Phaser.GameObjects.Text;
+  private currentRunScore: number;
+  private currentRunShards: number;
+  private persistentShards: number;
+  private scoreText: Phaser.GameObjects.Text;
+  private shardText: Phaser.GameObjects.Text;
 
-    constructor(scene: Phaser.Scene, hudX: number, hudY: number) {
-        // Initialize score tracking and HUD text objects
-    }
+  constructor(scene: Phaser.Scene, hudX: number, hudY: number) {
+    // Initialize score tracking and HUD text objects
+  }
 
-    public addShardScore(value: number): void {
-        // Increment run score and shard count, update HUD display
-    }
+  public addShardScore(value: number): void {
+    // Increment run score and shard count, update HUD display
+  }
 
-    public getRunScore(): number {
-        // Return current run total score
-    }
+  public getRunScore(): number {
+    // Return current run total score
+  }
 
-    public getRunShards(): number {
-        // Return current run shard count
-    }
+  public getRunShards(): number {
+    // Return current run shard count
+  }
 
-    public getPersistentShards(): number {
-        // Return accumulated persistent shards for meta-progression
-    }
+  public getPersistentShards(): number {
+    // Return accumulated persistent shards for meta-progression
+  }
 
-    public commitRunShards(): void {
-        // Transfer run shards to persistent total for meta-progression
-    }
+  public commitRunShards(): void {
+    // Transfer run shards to persistent total for meta-progression
+  }
 
-    public resetRunStats(): void {
-        // Clear run totals for new game start
-    }
+  public resetRunStats(): void {
+    // Clear run totals for new game start
+  }
 
-    private updateHUD(): void {
-        // Refresh score and shard display text
-    }
+  private updateHUD(): void {
+    // Refresh score and shard display text
+  }
 
-    private animateScoreIncrease(value: number): void {
-        // Brief animation for satisfying collection feedback
-    }
+  private animateScoreIncrease(value: number): void {
+    // Brief animation for satisfying collection feedback
+  }
 }
 
 // Optimized magnetic physics utility
 class MagnetPhysics {
-    public static calculateMagneticForce(
-        shardX: number, shardY: number,
-        targetX: number, targetY: number,
-        maxForce: number,
-        magnetRadius: number
-    ): { x: number; y: number } | null {
-        // Optimized magnetic force calculation with distance caching
-    }
+  public static calculateMagneticForce(
+    shardX: number,
+    shardY: number,
+    targetX: number,
+    targetY: number,
+    maxForce: number,
+    magnetRadius: number
+  ): { x: number; y: number } | null {
+    // Optimized magnetic force calculation with distance caching
+  }
 
-    public static isInMagneticRange(
-        shardX: number, shardY: number,
-        targetX: number, targetY: number,
-        radius: number
-    ): boolean {
-        // Fast distance check using squared distance to avoid sqrt
-    }
+  public static isInMagneticRange(
+    shardX: number,
+    shardY: number,
+    targetX: number,
+    targetY: number,
+    radius: number
+  ): boolean {
+    // Fast distance check using squared distance to avoid sqrt
+  }
 
-    private static normalizeForce(fx: number, fy: number, maxForce: number): { x: number; y: number } {
-        // Normalize force vector to maximum strength
-    }
+  private static normalizeForce(
+    fx: number,
+    fy: number,
+    maxForce: number
+  ): { x: number; y: number } {
+    // Normalize force vector to maximum strength
+  }
 }
 ```
 

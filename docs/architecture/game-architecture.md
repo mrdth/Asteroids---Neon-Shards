@@ -7,14 +7,16 @@
 
 ## 1) Architecture Overview
 
-**Goal:** Implement a modern, performant reimagining of *Asteroids* with roguelite meta-progression and a neo‑vaporwave identity. The architecture emphasizes **modular systems**, **data-driven tuning**, and **deterministic gameplay** where feasible for repeatability.
+**Goal:** Implement a modern, performant reimagining of _Asteroids_ with roguelite meta-progression and a neo‑vaporwave identity. The architecture emphasizes **modular systems**, **data-driven tuning**, and **deterministic gameplay** where feasible for repeatability.
 
 **Key Systems**
+
 - Scene Pipeline: **Boot → Preload → Menu → Game → Summary → MetaHub (Upgrades)**
 - **Game Loop Systems** (runtime in Game scene): Input, Physics, Asteroid Spawner, Asteroid AI, Weapons/Bullets, Collision & Damage, Shard Drops & Magnetism, Wave Manager, VFX/Audio, HUD.
 - **Meta Systems** (outside runs): Persistence (LocalStorage), Upgrade Tree, Economy.
 
 **Design Pillars Mapped to Tech**
+
 - Player-First Fun → Low-latency input, clear feedback, readable VFX.
 - Replayability Through Progression → Persisted shards + upgrade data model.
 - Distinct Aesthetic → Lightweight shaders/postFX, neon palette via pipelines.
@@ -49,6 +51,7 @@ neon-asteroids/
 ```
 
 **Module Boundaries**
+
 - `systems/*` contain stateless-ish managers operating on pools/collections.
 - `gameobjects/*` are thin wrappers over sprites/containers, exposing a typed API for systems to manipulate.
 - `config/*` drives balancing (HP, speeds, yields, scaling) and feature flags.
@@ -76,17 +79,18 @@ export const BALANCE = {
   player: { thrust: 220, turnSpeed: 210, friction: 0.98, fireRateHz: 4, bulletSpeed: 520 },
   asteroid: {
     baseHP: { large: 100, medium: 50, small: 20 },
-    splitMap: { large: 'medium', medium: 'small' },
+    splitMap: { large: "medium", medium: "small" },
     maxOnScreen: 20,
     baseSpeed: { large: 60, medium: 90, small: 130 },
-    spinRange: [ -60, 60 ]
+    spinRange: [-60, 60],
   },
   shards: { baseYield: { large: 5, medium: 3, small: 1 }, lifespanMs: 4000, magnetRadius: 160 },
-  scaling: { perWave: { hp: 0.20, speed: 0.05, yield: 0.05 }, spawnPerWave: 1 },
+  scaling: { perWave: { hp: 0.2, speed: 0.05, yield: 0.05 }, spawnPerWave: 1 },
 };
 ```
 
 Feature flags for MVP vs Post‑MVP:
+
 ```ts
 export const FEATURES = {
   shields: false, // post-MVP
@@ -122,59 +126,68 @@ Each system is updated from `GameScene.update()` in a fixed order to reduce race
 
 ```ts
 // Pseudocode order
-input.update()
-weapon.update(dt)
-physics.preStep(dt)
-asteroidSpawner.update(dt)
-asteroidAI.update(dt)
-bullets.update(dt)
-collisions.update()
-shards.update(dt)
-waveManager.update(dt)
-hud.update()
-vfx.update(dt)
-audio.update(dt)
+input.update();
+weapon.update(dt);
+physics.preStep(dt);
+asteroidSpawner.update(dt);
+asteroidAI.update(dt);
+bullets.update(dt);
+collisions.update();
+shards.update(dt);
+waveManager.update(dt);
+hud.update();
+vfx.update(dt);
+audio.update(dt);
 ```
 
 ### 6.1 Input System
+
 - Abstraction for **keyboard, gamepad, touch**.
 - Exposes intents: `thrust`, `turnLeft`, `turnRight`, `fire`.
 - Applies deadzones; mobile: on-screen joystick + fire button.
 
 ### 6.2 Player Ship
+
 - Body with linear damping for **friction-dampened momentum**.
 - **Screen-wrap** helper resets position across edges.
 - Weapon node child for muzzle flashes.
 
 ### 6.3 Weapon & Bullets
+
 - **Fire-rate cap** enforced; bullet pool with ring buffer.
 - Bullets carry `damage: 20` base; lifetime cull.
 
 ### 6.4 Asteroid Spawner & AI
+
 - Wave-driven counts; random spawn at safe distance from player.
 - Large → Medium → Small split logic; inherit portion of velocity + random spin.
 - Cap **max asteroids on screen = 20**.
 
 ### 6.5 Collision & Damage
+
 - Arcade Physics overlap checks: bullets↔asteroids, player↔asteroids, player↔shards.
 - Damage pipeline triggers:
   - HP decrement → crack stage → destroy → split/spawn shards → VFX/Audio.
 - Post-destroy: enqueue splits; avoid mid-iteration mutation hazards.
 
 ### 6.6 Shards & Magnetism
+
 - Spawn from destroyed asteroids; short lifespan; **magnetic pull** to player within radius.
 - Collect increments **run score** and **post-run persistent shards** via Summary.
 
 ### 6.7 Wave Manager
+
 - Tracks wave number; applies **per-wave scaling** (HP +20%, Speed +5%, Yield +5%).
 - Spawns +1 asteroid per wave after Wave 2.
 - Transitions to **endless** behavior past 10 (procedural escalation).
 
 ### 6.8 HUD System
+
 - Score (TL), Shards (TR), Wave indicator, future Shields.
 - Auto-scale for mobile; Bitmap font or SDF text.
 
 ### 6.9 VFX/Audio
+
 - **Particle-based explosions**, crack sprites, neon glows.
 - Optional postFX: bloom/glow shader with intensity clamps for readability.
 - Audio: laser, explosion, shard pop, death slow-mo sting.
@@ -185,11 +198,17 @@ audio.update(dt)
 
 ```ts
 // src/data/save.ts
-export interface UpgradeNode { id: string; tier: number; cost: number; maxTier: number; effects: Record<string, number>; }
+export interface UpgradeNode {
+  id: string;
+  tier: number;
+  cost: number;
+  maxTier: number;
+  effects: Record<string, number>;
+}
 export interface SaveData {
   version: 1;
   shards: number; // persistent currency
-  upgrades: Record<string, UpgradeNode['tier']>;
+  upgrades: Record<string, UpgradeNode["tier"]>;
   settings: { sfx: number; music: number; vibration: boolean };
 }
 ```
@@ -210,6 +229,7 @@ export interface SaveData {
 - Mobile rendering scale option (75–90%) if FPS dips.
 
 **Performance Budgets**
+
 - Draw calls: < 200 typical
 - Active bodies: ≤ 60 (asteroids ≤20 + fragments + bullets)
 - SFX voices: ≤ 8 concurrent
@@ -233,8 +253,8 @@ export interface SaveData {
 
 ```ts
 // wave-scaling.spec.ts
-it('applies per-wave scaling', () => {
-  const w3 = applyScaling({ base: 100, wave: 3, inc: 0.20 });
+it("applies per-wave scaling", () => {
+  const w3 = applyScaling({ base: 100, wave: 3, inc: 0.2 });
   expect(w3).toBeCloseTo(144); // 100 * (1.2)^(3-1)
 });
 ```
@@ -261,8 +281,8 @@ it('applies per-wave scaling', () => {
 
 - **Shields**: one-hit protection; visual ring; cooldown UI.
 - **Special Asteroids**
-  - *Glowing*: normal physics; on destroy drop temporary boost (fire rate / thrust / shield); 10% wave chance from Wave 4+.
-  - *Corrupted*: erratic motion, higher HP, +200% shards; 5% wave chance from Wave 6+.
+  - _Glowing_: normal physics; on destroy drop temporary boost (fire rate / thrust / shield); 10% wave chance from Wave 4+.
+  - _Corrupted_: erratic motion, higher HP, +200% shards; 5% wave chance from Wave 6+.
 - **Meta**: branching tree UI with tooltips, refund rules.
 
 ---
@@ -312,15 +332,37 @@ it('applies per-wave scaling', () => {
 ## 19) Appendix – Key Interfaces
 
 ```ts
-export interface IntentInput { thrust: number; turn: number; fire: boolean; }
-export interface SpawnParams { wave: number; safeRadius: number; }
-export interface AsteroidData { id: number; size: 'large'|'medium'|'small'; hp: number; vx: number; vy: number; spin: number; }
-export interface ShardData { id: number; value: number; ttl: number; }
+export interface IntentInput {
+  thrust: number;
+  turn: number;
+  fire: boolean;
+}
+export interface SpawnParams {
+  wave: number;
+  safeRadius: number;
+}
+export interface AsteroidData {
+  id: number;
+  size: "large" | "medium" | "small";
+  hp: number;
+  vx: number;
+  vy: number;
+  spin: number;
+}
+export interface ShardData {
+  id: number;
+  value: number;
+  ttl: number;
+}
 ```
 
 ```ts
 // System contracts
-export interface System { init(scene: Phaser.Scene): void; update(dt: number): void; shutdown(): void }
+export interface System {
+  init(scene: Phaser.Scene): void;
+  update(dt: number): void;
+  shutdown(): void;
+}
 ```
 
 ---

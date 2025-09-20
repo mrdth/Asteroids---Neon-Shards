@@ -15,15 +15,15 @@ export class GameScene extends Phaser.Scene {
   private bulletManager!: BulletManager;
   private weaponSystem!: WeaponSystem;
   private shardManager!: ShardManager;
-  private gameLevel: number = 1;
-  private playerLives: number = 3;
-  private playerScore: number = 0;
-  private shardsCollected: number = 0;
-  private invulnerabilityTime: number = 0;
+  private gameLevel = 1;
+  private playerLives = 3;
+  private playerScore = 0;
+  private shardsCollected = 0;
+  private invulnerabilityTime = 0;
   private livesText!: Phaser.GameObjects.Text;
   private scoreText!: Phaser.GameObjects.Text;
   private shardsText!: Phaser.GameObjects.Text;
-  private waveInProgress: boolean = false;
+  private waveInProgress = false;
 
   constructor() {
     super({ key: "GameScene" });
@@ -31,39 +31,27 @@ export class GameScene extends Phaser.Scene {
 
   preload(): void {
     // Load asteroid spritesheet (5 frames: 100%, 80%, 60%, 40%, 20% health)
-    this.load.spritesheet(
-      "asteroids-large",
-      "assets/images/asteroids-spritesheet.png",
-      {
-        frameWidth: 200,
-        frameHeight: 200,
-        startFrame: 0,
-        endFrame: 4,
-      },
-    );
+    this.load.spritesheet("asteroids-large", "assets/images/asteroids-spritesheet.png", {
+      frameWidth: 200,
+      frameHeight: 200,
+      startFrame: 0,
+      endFrame: 4,
+    });
 
     // Use the same spritesheet for different sizes (we'll scale them)
-    this.load.spritesheet(
-      "asteroids-medium",
-      "assets/images/asteroids-spritesheet.png",
-      {
-        frameWidth: 200,
-        frameHeight: 200,
-        startFrame: 0,
-        endFrame: 4,
-      },
-    );
+    this.load.spritesheet("asteroids-medium", "assets/images/asteroids-spritesheet.png", {
+      frameWidth: 200,
+      frameHeight: 200,
+      startFrame: 0,
+      endFrame: 4,
+    });
 
-    this.load.spritesheet(
-      "asteroids-small",
-      "assets/images/asteroids-spritesheet.png",
-      {
-        frameWidth: 200,
-        frameHeight: 200,
-        startFrame: 0,
-        endFrame: 4,
-      },
-    );
+    this.load.spritesheet("asteroids-small", "assets/images/asteroids-spritesheet.png", {
+      frameWidth: 200,
+      frameHeight: 200,
+      startFrame: 0,
+      endFrame: 4,
+    });
 
     // Load weapon assets
     this.load.image("bullet-neon", "assets/sprites/bullet-neon.png");
@@ -104,11 +92,7 @@ export class GameScene extends Phaser.Scene {
 
     // Set up asteroid event listeners
     this.asteroidManager.on("asteroid-spawned", this.onAsteroidSpawned, this);
-    this.asteroidManager.on(
-      "asteroid-destroyed",
-      this.onAsteroidDestroyed,
-      this,
-    );
+    this.asteroidManager.on("asteroid-destroyed", this.onAsteroidDestroyed, this);
     this.asteroidManager.on("asteroid-split", this.onAsteroidSplit, this);
 
     // Set up shard event listeners
@@ -123,12 +107,9 @@ export class GameScene extends Phaser.Scene {
 
     // Enable gamepad support
     if (this.input.gamepad) {
-      this.input.gamepad.once(
-        "connected",
-        (gamepad: Phaser.Input.Gamepad.Gamepad) => {
-          console.log("Gamepad connected:", gamepad.id);
-        },
-      );
+      this.input.gamepad.once("connected", (gamepad: Phaser.Input.Gamepad.Gamepad) => {
+        console.log("Gamepad connected:", gamepad.id);
+      });
     }
 
     // Add debug text (can be removed later)
@@ -163,10 +144,15 @@ export class GameScene extends Phaser.Scene {
       color: "#ffffff",
     });
 
-    this.shardsText = this.add.text(this.cameras.main.width - 150, 10, `Shards: ${this.shardsCollected}`, {
-      fontSize: "16px",
-      color: "#00ffff",
-    });
+    this.shardsText = this.add.text(
+      this.cameras.main.width - 150,
+      10,
+      `Shards: ${this.shardsCollected}`,
+      {
+        fontSize: "16px",
+        color: "#00ffff",
+      }
+    );
     this.shardsText.setOrigin(0, 0);
   }
 
@@ -213,35 +199,41 @@ export class GameScene extends Phaser.Scene {
     // console.log('Ship thrust:', data.intensity);
   }
 
-  private onWeaponFired(event: { position: { x: number; y: number }; angle: number; bullet: any }): void {
+  private onWeaponFired(event: {
+    position: { x: number; y: number };
+    angle: number;
+    bullet: any;
+  }): void {
     console.log("Weapon fired!");
     // Later: trigger fire sound/animation, muzzle flash
   }
 
-  private onBulletAsteroidCollision(event: { bullet: any; asteroid: any; damage: number; position: { x: number; y: number } }): void {
+  private onBulletAsteroidCollision(event: {
+    bullet: any;
+    asteroid: any;
+    damage: number;
+    position: { x: number; y: number };
+  }): void {
     // Apply damage to asteroid
     const isDestroyed = this.asteroidManager.damageAsteroid(event.asteroid, event.damage);
 
     if (isDestroyed) {
       console.log(`Asteroid destroyed by bullet! Damage: ${event.damage}`);
     } else {
-      console.log(`Asteroid hit! Damage: ${event.damage}, Health: ${event.asteroid.getHealth()}/${event.asteroid.getMaxHealth()}`);
+      console.log(
+        `Asteroid hit! Damage: ${event.damage}, Health: ${event.asteroid.getHealth()}/${event.asteroid.getMaxHealth()}`
+      );
     }
   }
 
   private startWave(): void {
     const playerPos = { x: this.playerShip.x, y: this.playerShip.y };
-    const spawnedAsteroids = this.asteroidSpawner.spawnWaveByLevel(
-      this.gameLevel,
-      playerPos,
-    );
+    const spawnedAsteroids = this.asteroidSpawner.spawnWaveByLevel(this.gameLevel, playerPos);
 
     // Mark wave as in progress
     this.waveInProgress = true;
 
-    console.log(
-      `Wave ${this.gameLevel} started with ${spawnedAsteroids.length} asteroids`,
-    );
+    console.log(`Wave ${this.gameLevel} started with ${spawnedAsteroids.length} asteroids`);
   }
 
   private onWaveComplete(): void {
@@ -264,17 +256,11 @@ export class GameScene extends Phaser.Scene {
 
   private onAsteroidDestroyed(asteroid: Asteroid): void {
     // Spawn shards when asteroid is destroyed
-    this.shardManager.spawnShardsFromAsteroid(
-      asteroid.getSize(),
-      asteroid.x,
-      asteroid.y
-    );
+    this.shardManager.spawnShardsFromAsteroid(asteroid.getSize(), asteroid.x, asteroid.y);
   }
 
   private onAsteroidSplit(parentAsteroid: Asteroid, splitData: any[]): void {
-    console.log(
-      `Asteroid split: ${parentAsteroid.getSize()} into ${splitData.length} pieces`,
-    );
+    console.log(`Asteroid split: ${parentAsteroid.getSize()} into ${splitData.length} pieces`);
   }
 
   private setupCollisions(): void {
@@ -309,7 +295,7 @@ export class GameScene extends Phaser.Scene {
     const isDestroyed = this.asteroidManager.damageAsteroid(asteroidObj, collisionDamage);
 
     if (isDestroyed) {
-      console.log(`Asteroid destroyed by collision!`);
+      console.log("Asteroid destroyed by collision!");
     }
 
     // Damage the ship
@@ -340,22 +326,24 @@ export class GameScene extends Phaser.Scene {
     console.log("Game Over!");
 
     // Display game over text
-    this.add.text(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2,
-      "GAME OVER\nPress R to Restart",
-      {
-        fontSize: "32px",
-        color: "#ff0000",
-        align: "center"
-      }
-    ).setOrigin(0.5);
+    this.add
+      .text(
+        this.cameras.main.width / 2,
+        this.cameras.main.height / 2,
+        "GAME OVER\nPress R to Restart",
+        {
+          fontSize: "32px",
+          color: "#ff0000",
+          align: "center",
+        }
+      )
+      .setOrigin(0.5);
 
     // Pause the game
     this.physics.pause();
 
     // Add restart functionality
-    this.input.keyboard?.once('keydown-R', () => {
+    this.input.keyboard?.once("keydown-R", () => {
       this.scene.restart();
     });
   }
@@ -402,7 +390,11 @@ export class GameScene extends Phaser.Scene {
     return this.shardManager;
   }
 
-  private onShardCollected(event: { shard: any; value: number; position: { x: number; y: number } }): void {
+  private onShardCollected(event: {
+    shard: any;
+    value: number;
+    position: { x: number; y: number };
+  }): void {
     // Update score and shard count
     this.playerScore += event.value;
     this.shardsCollected++;
@@ -417,7 +409,13 @@ export class GameScene extends Phaser.Scene {
     console.log(`Shard collected! +${event.value} points. Total: ${this.playerScore}`);
   }
 
-  private onShardsFromAsteroid(event: { asteroidSize: any; position: { x: number; y: number }; shardCount: number }): void {
-    console.log(`${event.shardCount} shards spawned from ${event.asteroidSize} asteroid at (${event.position.x}, ${event.position.y})`);
+  private onShardsFromAsteroid(event: {
+    asteroidSize: any;
+    position: { x: number; y: number };
+    shardCount: number;
+  }): void {
+    console.log(
+      `${event.shardCount} shards spawned from ${event.asteroidSize} asteroid at (${event.position.x}, ${event.position.y})`
+    );
   }
 }

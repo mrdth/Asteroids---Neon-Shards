@@ -19,6 +19,7 @@ The weapon system includes automatic fire rate capping (3-5 shots/sec), neon las
 ## Acceptance Criteria
 
 ### Functional Requirements
+
 - [ ] Player can fire bullets using space bar/fire button with immediate response
 - [ ] Fire rate is capped at 4 shots per second (250ms minimum interval between shots)
 - [ ] Bullets spawn at ship's current position and move in ship's facing direction
@@ -30,6 +31,7 @@ The weapon system includes automatic fire rate capping (3-5 shots/sec), neon las
 - [ ] Rapid fire input is properly rate-limited without losing responsiveness
 
 ### Technical Requirements
+
 - [ ] Code follows TypeScript strict mode standards
 - [ ] Maintains 60 FPS with 15 active bullets and collision detection
 - [ ] No memory leaks during continuous firing cycles
@@ -39,6 +41,7 @@ The weapon system includes automatic fire rate capping (3-5 shots/sec), neon las
 - [ ] Fire rate timing uses high-precision timestamps for consistency
 
 ### Game Design Requirements
+
 - [ ] Bullet speed matches GDD specification (520 units/sec)
 - [ ] Damage output matches GDD specification (20 damage per bullet)
 - [ ] Fire rate matches GDD specification (4 shots/sec baseline)
@@ -71,135 +74,139 @@ The weapon system includes automatic fire rate capping (3-5 shots/sec), neon las
 ```typescript
 // Weapon configuration interface
 interface WeaponConfig {
-    fireRateHz: number;        // shots per second (4.0)
-    bulletSpeed: number;       // pixels per second (520)
-    bulletDamage: number;      // damage per shot (20)
-    bulletLifetimeMs: number;  // bullet lifetime in milliseconds (3000)
-    maxActiveBullets: number;  // maximum concurrent bullets (15)
-    muzzleOffset: number;      // distance from ship center to muzzle (16)
+  fireRateHz: number; // shots per second (4.0)
+  bulletSpeed: number; // pixels per second (520)
+  bulletDamage: number; // damage per shot (20)
+  bulletLifetimeMs: number; // bullet lifetime in milliseconds (3000)
+  maxActiveBullets: number; // maximum concurrent bullets (15)
+  muzzleOffset: number; // distance from ship center to muzzle (16)
 }
 
 // Bullet data interface
 interface BulletData {
-    id: number;
-    damage: number;
-    velocity: { x: number; y: number };
-    timeToLive: number;
-    ownerId: string; // for future multiplayer or enemy bullets
+  id: number;
+  damage: number;
+  velocity: { x: number; y: number };
+  timeToLive: number;
+  ownerId: string; // for future multiplayer or enemy bullets
 }
 
 // Main Bullet class
 class Bullet extends Phaser.Physics.Arcade.Sprite {
-    private damage: number;
-    private timeToLive: number;
-    private initialLifetime: number;
-    private isActive: boolean;
+  private damage: number;
+  private timeToLive: number;
+  private initialLifetime: number;
+  private isActive: boolean;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'bullet-neon');
-        // Initialize physics body, damage, lifetime
-    }
+  constructor(scene: Phaser.Scene, x: number, y: number) {
+    super(scene, x, y, "bullet-neon");
+    // Initialize physics body, damage, lifetime
+  }
 
-    public fire(x: number, y: number, angle: number, config: WeaponConfig): void {
-        // Set position, calculate velocity from angle, start lifetime countdown
-    }
+  public fire(x: number, y: number, angle: number, config: WeaponConfig): void {
+    // Set position, calculate velocity from angle, start lifetime countdown
+  }
 
-    public update(dt: number): void {
-        // Update lifetime, handle screen wrapping, auto-destroy on expiration
-    }
+  public update(dt: number): void {
+    // Update lifetime, handle screen wrapping, auto-destroy on expiration
+  }
 
-    public getDamage(): number {
-        // Return bullet damage value for collision handling
-    }
+  public getDamage(): number {
+    // Return bullet damage value for collision handling
+  }
 
-    public deactivate(): void {
-        // Disable physics, hide sprite, mark as inactive for pooling
-    }
+  public deactivate(): void {
+    // Disable physics, hide sprite, mark as inactive for pooling
+  }
 
-    private calculateVelocity(angle: number, speed: number): { x: number; y: number } {
-        // Convert angle and speed to velocity vector
-    }
+  private calculateVelocity(angle: number, speed: number): { x: number; y: number } {
+    // Convert angle and speed to velocity vector
+  }
 }
 
 // Weapon system class
 class WeaponSystem {
-    private scene: Phaser.Scene;
-    private bulletManager: BulletManager;
-    private config: WeaponConfig;
-    private lastFireTime: number;
-    private fireInterval: number;
-    private inputSystem: InputSystem;
+  private scene: Phaser.Scene;
+  private bulletManager: BulletManager;
+  private config: WeaponConfig;
+  private lastFireTime: number;
+  private fireInterval: number;
+  private inputSystem: InputSystem;
 
-    constructor(scene: Phaser.Scene, bulletManager: BulletManager, config: WeaponConfig) {
-        // Initialize weapon system with rate limiting
-    }
+  constructor(scene: Phaser.Scene, bulletManager: BulletManager, config: WeaponConfig) {
+    // Initialize weapon system with rate limiting
+  }
 
-    public update(dt: number, shipPosition: { x: number; y: number }, shipRotation: number): void {
-        // Check fire input, enforce rate limiting, create bullets
-    }
+  public update(dt: number, shipPosition: { x: number; y: number }, shipRotation: number): void {
+    // Check fire input, enforce rate limiting, create bullets
+  }
 
-    public canFire(): boolean {
-        // Check if enough time has passed since last shot
-    }
+  public canFire(): boolean {
+    // Check if enough time has passed since last shot
+  }
 
-    public fire(x: number, y: number, angle: number): Bullet | null {
-        // Create and fire bullet if rate limit allows
-    }
+  public fire(x: number, y: number, angle: number): Bullet | null {
+    // Create and fire bullet if rate limit allows
+  }
 
-    private calculateMuzzlePosition(shipX: number, shipY: number, shipAngle: number): { x: number; y: number } {
-        // Calculate bullet spawn position at ship's muzzle
-    }
+  private calculateMuzzlePosition(
+    shipX: number,
+    shipY: number,
+    shipAngle: number
+  ): { x: number; y: number } {
+    // Calculate bullet spawn position at ship's muzzle
+  }
 
-    private enforceFireRate(): boolean {
-        // Check if current time allows firing based on fire rate cap
-    }
+  private enforceFireRate(): boolean {
+    // Check if current time allows firing based on fire rate cap
+  }
 }
 
 // Bullet pool manager
 class BulletManager {
-    private bulletPool: ObjectPool<Bullet>;
-    private activeBullets: Set<Bullet>;
-    private maxActiveBullets: number;
-    private scene: Phaser.Scene;
+  private bulletPool: ObjectPool<Bullet>;
+  private activeBullets: Set<Bullet>;
+  private maxActiveBullets: number;
+  private scene: Phaser.Scene;
 
-    constructor(scene: Phaser.Scene, maxBullets: number = 15) {
-        // Initialize bullet object pool and tracking
-    }
+  constructor(scene: Phaser.Scene, maxBullets: number = 15) {
+    // Initialize bullet object pool and tracking
+  }
 
-    public getBullet(): Bullet | null {
-        // Get bullet from pool or return null if max reached
-    }
+  public getBullet(): Bullet | null {
+    // Get bullet from pool or return null if max reached
+  }
 
-    public returnBullet(bullet: Bullet): void {
-        // Return bullet to pool and remove from active tracking
-    }
+  public returnBullet(bullet: Bullet): void {
+    // Return bullet to pool and remove from active tracking
+  }
 
-    public update(dt: number): void {
-        // Update all active bullets, handle lifetime expiration
-    }
+  public update(dt: number): void {
+    // Update all active bullets, handle lifetime expiration
+  }
 
-    public getActiveBulletCount(): number {
-        // Return current number of active bullets
-    }
+  public getActiveBulletCount(): number {
+    // Return current number of active bullets
+  }
 
-    public checkCollisions(asteroids: Asteroid[]): void {
-        // Handle bullet-asteroid collision detection and responses
-    }
+  public checkCollisions(asteroids: Asteroid[]): void {
+    // Handle bullet-asteroid collision detection and responses
+  }
 }
 
 // High-precision timer utility
 class Timer {
-    private static getHighResTimestamp(): number {
-        // Return high-resolution timestamp for precise timing
-    }
+  private static getHighResTimestamp(): number {
+    // Return high-resolution timestamp for precise timing
+  }
 
-    public static hasElapsed(lastTime: number, intervalMs: number): boolean {
-        // Check if specified interval has elapsed since last time
-    }
+  public static hasElapsed(lastTime: number, intervalMs: number): boolean {
+    // Check if specified interval has elapsed since last time
+  }
 
-    public static getElapsedMs(startTime: number): number {
-        // Calculate elapsed milliseconds since start time
-    }
+  public static getElapsedMs(startTime: number): number {
+    // Calculate elapsed milliseconds since start time
+  }
 }
 ```
 

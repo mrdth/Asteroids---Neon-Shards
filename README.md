@@ -12,6 +12,7 @@
 **Status:** In Development
 
 ### Core Game Loop
+
 1. **Enter** asteroid field in your neon-powered ship
 2. **Destroy** asteroids with precision laser weapons
 3. **Collect** Neon Shards dropped from destroyed asteroids
@@ -33,6 +34,7 @@
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org) (v16+ recommended)
 - Modern web browser with ES6+ support
 
@@ -65,13 +67,13 @@ npm run build
 
 ### Controls
 
-| Input | Action |
-|-------|--------|
-| **W** / **↑** | Thrust forward |
-| **A** / **←** | Turn left |
-| **D** / **→** | Turn right |
-| **Space** / **S** | Fire weapon |
-| **F** | Debug: Damage nearest asteroid |
+| Input             | Action                         |
+| ----------------- | ------------------------------ |
+| **W** / **↑**     | Thrust forward                 |
+| **A** / **←**     | Turn left                      |
+| **D** / **→**     | Turn right                     |
+| **Space** / **S** | Fire weapon                    |
+| **F**             | Debug: Damage nearest asteroid |
 
 ### Gameplay Tips
 
@@ -200,29 +202,32 @@ npm run test:coverage
 
 ## 📋 Development Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Development server with hot reload |
-| `npm run build` | Production build with optimization |
-| `npm run preview` | Preview production build locally |
-| `npm run lint` | ESLint code quality checking |
-| `npm run lint:fix` | Auto-fix linting issues |
-| `npm test` | Run unit test suite |
-| `npm run type-check` | TypeScript type validation |
+| Command              | Description                        |
+| -------------------- | ---------------------------------- |
+| `npm run dev`        | Development server with hot reload |
+| `npm run build`      | Production build with optimization |
+| `npm run preview`    | Preview production build locally   |
+| `npm run lint`       | ESLint code quality checking       |
+| `npm run lint:fix`   | Auto-fix linting issues            |
+| `npm test`           | Run unit test suite                |
+| `npm run type-check` | TypeScript type validation         |
 
 ## 🎯 Project Goals
 
 ### Technical Validation
+
 - Prove Phaser 3 + TypeScript can deliver console-quality web games
 - Demonstrate effective object pooling and performance optimization
 - Validate event-driven architecture for complex game systems
 
 ### Game Design Validation
+
 - Modernize classic arcade mechanics for contemporary audiences
 - Balance immediate fun with long-term progression hooks
 - Create distinctive aesthetic identity within established genre
 
 ### Development Process Validation
+
 - Test BMAD (story-driven development) methodology on real project
 - Validate AI-assisted development workflow for game creation
 - Demonstrate comprehensive documentation driving implementation
@@ -257,4 +262,4 @@ This project uses a story-driven development approach with comprehensive documen
 
 **Built with ❤️ using Phaser 3, TypeScript, and modern web technologies**
 
-*For the love of retro gaming and neon aesthetics* ✨
+_For the love of retro gaming and neon aesthetics_ ✨

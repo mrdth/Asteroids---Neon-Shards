@@ -13,9 +13,15 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
   private weaponSystem!: WeaponSystem;
 
   // Physics state
-  private angularVelocity: number = 0;
+  private angularVelocity = 0;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig, weaponConfig: WeaponConfig) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    config: PlayerConfig,
+    weaponConfig: WeaponConfig
+  ) {
     // Create a simple triangle sprite for the ship
     const graphics = scene.add.graphics();
     graphics.fillStyle(0xffffff);
@@ -93,23 +99,17 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
     // Calculate thrust vector based on ship's rotation
     const thrustVector = MathUtils.getThrustVector(
       this.rotation,
-      this.config.thrust * intensity * dt,
+      this.config.thrust * intensity * dt
     );
 
     // Apply thrust to velocity
-    body.setVelocity(
-      body.velocity.x + thrustVector.x,
-      body.velocity.y + thrustVector.y,
-    );
+    body.setVelocity(body.velocity.x + thrustVector.x, body.velocity.y + thrustVector.y);
 
     // Clamp velocity to max speed
     const currentSpeed = MathUtils.magnitude(body.velocity.x, body.velocity.y);
     if (currentSpeed > this.config.maxSpeed) {
       const normalized = MathUtils.normalize(body.velocity.x, body.velocity.y);
-      body.setVelocity(
-        normalized.x * this.config.maxSpeed,
-        normalized.y * this.config.maxSpeed,
-      );
+      body.setVelocity(normalized.x * this.config.maxSpeed, normalized.y * this.config.maxSpeed);
     }
   }
 
@@ -122,9 +122,7 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
       }
     } else {
       // Apply turn input to angular velocity
-      const turnSpeedRadians = MathUtils.degreesToRadians(
-        this.config.turnSpeed,
-      );
+      const turnSpeedRadians = MathUtils.degreesToRadians(this.config.turnSpeed);
       this.angularVelocity = turnInput * turnSpeedRadians;
     }
 
@@ -147,10 +145,7 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
     // Use frame-rate independent friction calculation
     const frictionFactor = Math.pow(this.config.friction, dt * 60); // Normalize to 60 FPS
 
-    body.setVelocity(
-      body.velocity.x * frictionFactor,
-      body.velocity.y * frictionFactor,
-    );
+    body.setVelocity(body.velocity.x * frictionFactor, body.velocity.y * frictionFactor);
 
     // Stop very small velocities to prevent infinite tiny movements
     if (Math.abs(body.velocity.x) < 0.1) {

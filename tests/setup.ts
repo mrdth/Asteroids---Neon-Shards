@@ -1,5 +1,5 @@
 // Mock Phaser for testing
-import 'canvas';
+import "canvas";
 
 global.Phaser = {
   Scene: class MockScene {
@@ -72,7 +72,9 @@ global.Phaser = {
 
         setOrigin = vi.fn();
         setDisplaySize = vi.fn();
-        setRotation = vi.fn((rot: number) => { this.rotation = rot; });
+        setRotation = vi.fn((rot: number) => {
+          this.rotation = rot;
+        });
         setPosition = vi.fn((x: number, y: number) => {
           this.x = x;
           this.y = y;
@@ -135,12 +137,25 @@ global.Phaser = {
   },
   Geom: {
     Rectangle: class MockRectangle {
-      constructor(public x: number, public y: number, public width: number, public height: number) {}
+      constructor(
+        public x: number,
+        public y: number,
+        public width: number,
+        public height: number
+      ) {}
 
-      get left() { return this.x; }
-      get right() { return this.x + this.width; }
-      get top() { return this.y; }
-      get bottom() { return this.y + this.height; }
+      get left() {
+        return this.x;
+      }
+      get right() {
+        return this.x + this.width;
+      }
+      get top() {
+        return this.y;
+      }
+      get bottom() {
+        return this.y + this.height;
+      }
     },
   },
   GameObjects: {
