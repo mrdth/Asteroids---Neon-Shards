@@ -1,11 +1,12 @@
 import * as Phaser from "phaser";
 import { PlayerShip } from "../gameobjects/PlayerShip";
-import { PLAYER_CONFIG, AsteroidSize, WEAPON_CONFIG } from "../config/balance";
+import { PLAYER_CONFIG, AsteroidSize, WEAPON_CONFIG, SHARD_CONFIG } from "../config/balance";
 import { AsteroidManager } from "../systems/AsteroidManager";
 import { AsteroidSpawner } from "../systems/AsteroidSpawner";
 import { Asteroid } from "../gameobjects/Asteroid";
 import { BulletManager } from "../systems/BulletManager";
 import { WeaponSystem } from "../systems/WeaponSystem";
+import { ShardManager } from "../systems/ShardManager";
 
 export class GameScene extends Phaser.Scene {
   private playerShip!: PlayerShip;
@@ -13,10 +14,15 @@ export class GameScene extends Phaser.Scene {
   private asteroidSpawner!: AsteroidSpawner;
   private bulletManager!: BulletManager;
   private weaponSystem!: WeaponSystem;
+  private shardManager!: ShardManager;
   private gameLevel: number = 1;
   private playerLives: number = 3;
+  private playerScore: number = 0;
+  private shardsCollected: number = 0;
   private invulnerabilityTime: number = 0;
   private livesText!: Phaser.GameObjects.Text;
+  private scoreText!: Phaser.GameObjects.Text;
+  private shardsText!: Phaser.GameObjects.Text;
   private waveInProgress: boolean = false;
 
   constructor() {
@@ -62,6 +68,10 @@ export class GameScene extends Phaser.Scene {
     // Load weapon assets
     this.load.image("bullet-neon", "assets/sprites/bullet-neon.png");
     this.load.audio("laser-shot", "assets/audio/laser-shot.ogg");
+
+    // Load shard assets
+    this.load.image("shard-neon", "assets/sprites/shard-neon.png");
+    this.load.audio("shard-collect", "assets/audio/shard-collect.ogg");
   }
 
   create(): void {
@@ -81,6 +91,9 @@ export class GameScene extends Phaser.Scene {
     this.asteroidManager = new AsteroidManager(this);
     this.asteroidSpawner = new AsteroidSpawner(this, this.asteroidManager);
 
+    // Initialize shard system
+    this.shardManager = new ShardManager(this, SHARD_CONFIG);
+
     // Set up event listeners for ship events
     this.events.on("ship-destroyed", this.onShipDestroyed, this);
     this.events.on("ship-thrust", this.onShipThrust, this);
@@ -97,6 +110,10 @@ export class GameScene extends Phaser.Scene {
       this,
     );
     this.asteroidManager.on("asteroid-split", this.onAsteroidSplit, this);
+
+    // Set up shard event listeners
+    this.shardManager.on("shard-collected", this.onShardCollected, this);
+    this.shardManager.on("shards-from-asteroid", this.onShardsFromAsteroid, this);
 
     // Set up collision detection
     this.setupCollisions();
@@ -135,11 +152,22 @@ export class GameScene extends Phaser.Scene {
       color: "#00ff00",
     });
 
-    // Add lives display
+    // Add UI displays
     this.livesText = this.add.text(10, 95, `Lives: ${this.playerLives}`, {
       fontSize: "16px",
       color: "#ffffff",
     });
+
+    this.scoreText = this.add.text(10, 115, `Score: ${this.playerScore}`, {
+      fontSize: "16px",
+      color: "#ffffff",
+    });
+
+    this.shardsText = this.add.text(this.cameras.main.width - 150, 10, `Shards: ${this.shardsCollected}`, {
+      fontSize: "16px",
+      color: "#00ffff",
+    });
+    this.shardsText.setOrigin(0, 0);
   }
 
   update(time: number, delta: number): void {
@@ -149,8 +177,14 @@ export class GameScene extends Phaser.Scene {
     // Update asteroid systems
     this.asteroidManager.update(time, delta);
 
+    // Update shard systems
+    this.shardManager.update(delta, { x: this.playerShip.x, y: this.playerShip.y });
+
     // Check bullet-asteroid collisions
     this.bulletManager.checkCollisions(this.asteroidManager.getAllActiveAsteroids());
+
+    // Check shard-player collisions
+    this.shardManager.checkCollisions(this.playerShip);
 
     // Update invulnerability time
     if (this.invulnerabilityTime > 0) {
@@ -229,27 +263,18 @@ export class GameScene extends Phaser.Scene {
   }
 
   private onAsteroidDestroyed(asteroid: Asteroid): void {
-    // console.log('Asteroid destroyed:', asteroid.getSize());
+    // Spawn shards when asteroid is destroyed
+    this.shardManager.spawnShardsFromAsteroid(
+      asteroid.getSize(),
+      asteroid.x,
+      asteroid.y
+    );
   }
 
   private onAsteroidSplit(parentAsteroid: Asteroid, splitData: any[]): void {
     console.log(
       `Asteroid split: ${parentAsteroid.getSize()} into ${splitData.length} pieces`,
     );
-  }
-
-  /**
-   * Get reference to player ship for other systems
-   */
-  public getPlayerShip(): PlayerShip {
-    return this.playerShip;
-  }
-
-  /**
-   * Get reference to asteroid manager for other systems
-   */
-  public getAsteroidManager(): AsteroidManager {
-    return this.asteroidManager;
   }
 
   private setupCollisions(): void {
@@ -368,5 +393,31 @@ export class GameScene extends Phaser.Scene {
    */
   public getWeaponSystem(): WeaponSystem {
     return this.weaponSystem;
+  }
+
+  /**
+   * Get reference to shard manager for other systems
+   */
+  public getShardManager(): ShardManager {
+    return this.shardManager;
+  }
+
+  private onShardCollected(event: { shard: any; value: number; position: { x: number; y: number } }): void {
+    // Update score and shard count
+    this.playerScore += event.value;
+    this.shardsCollected++;
+
+    // Update UI
+    this.scoreText.setText(`Score: ${this.playerScore}`);
+    this.shardsText.setText(`Shards: ${this.shardsCollected}`);
+
+    // Play collection sound (optional)
+    // this.sound.play("shard-collect");
+
+    console.log(`Shard collected! +${event.value} points. Total: ${this.playerScore}`);
+  }
+
+  private onShardsFromAsteroid(event: { asteroidSize: any; position: { x: number; y: number }; shardCount: number }): void {
+    console.log(`${event.shardCount} shards spawned from ${event.asteroidSize} asteroid at (${event.position.x}, ${event.position.y})`);
   }
 }

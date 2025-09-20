@@ -312,7 +312,7 @@ class MagnetPhysics {
 - [ ] Add HUD integration for real-time score and shard display in top corners
 - [ ] Integrate shard spawning triggers into AsteroidManager.destroyAsteroid() method
 - [ ] Add PlayerShip collision detection for shard collection with proper bounds
-- [ ] Implement visual feedback system for collection (particle effects, scale animation)
+- [ ] Implement visual feedback system for collection (scale as it is 'pulled' into player ship)
 - [ ] Add audio feedback for shard collection, magnetic attraction, and expiration warning
 - [ ] Create shard spread pattern for multiple shards spawning from single asteroid destruction
 - [ ] Write unit tests for ShardManager spawning logic, yield calculations, and wave scaling
@@ -348,7 +348,7 @@ class MagnetPhysics {
 - Lifespan: 4 seconds (tension without punishment)
 - Magnetic Radius: 160 pixels (tactical positioning decisions)
 - Magnetic Force: 300 units/sec² (smooth but noticeable attraction)
-- Warning Time: 1 second before expiration (clear feedback)
+- Warning Time: 1 second before expiration (clear feedback - flash shard)
 - Collection Radius: 24 pixels (forgiving but requires proximity)
 
 ## Testing Requirements
@@ -420,14 +420,8 @@ class MagnetPhysics {
 
 - Shard sprite: Distinctive neon crystal with glow effect indicating value
 - Location: `assets/sprites/shard-neon.png`
-- Collection effect: Brief particle burst or scale animation for satisfying feedback
-- Location: `assets/sprites/shard-collect-effect.png`
-- Magnetic sound: Subtle audio cue when entering magnetic range
-- Location: `assets/audio/shard-magnetic.ogg`
 - Collection sound: Satisfying pickup sound for successful collection
 - Location: `assets/audio/shard-collect.ogg`
-- Warning sound: Brief alert tone when shard about to expire
-- Location: `assets/audio/shard-warning.ogg`
 
 ## Definition of Done
 

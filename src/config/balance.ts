@@ -73,3 +73,27 @@ export const WEAPON_CONFIG: WeaponConfig = {
     maxActiveBullets: 15,      // performance optimization
     muzzleOffset: 16           // spawn bullets ahead of ship
 };
+
+export interface ShardConfig {
+    baseYield: Record<AsteroidSize, number>;  // shards dropped per asteroid size
+    value: number;                            // score value per shard
+    lifespanMs: number;                       // how long shards exist before disappearing
+    magnetRadius: number;                     // radius within which shards are attracted to player
+    magnetForce: number;                      // force of magnetic attraction
+    collectRadius: number;                    // radius for collection collision
+    maxActiveShards: number;                  // performance limit
+}
+
+export const SHARD_CONFIG: ShardConfig = {
+    baseYield: {
+        [AsteroidSize.LARGE]: 5,              // large asteroids drop 5 shards
+        [AsteroidSize.MEDIUM]: 3,             // medium asteroids drop 3 shards
+        [AsteroidSize.SMALL]: 1               // small asteroids drop 1 shard
+    },
+    value: 10,                                // 10 points per shard collected
+    lifespanMs: 4000,                         // 4 second lifespan as per architecture
+    magnetRadius: 160,                        // attraction radius as per architecture
+    magnetForce: 200,                         // force applied toward player
+    collectRadius: 20,                        // collection detection radius
+    maxActiveShards: 50                       // performance limit on active shards
+};
