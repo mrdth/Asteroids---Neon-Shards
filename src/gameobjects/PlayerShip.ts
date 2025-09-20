@@ -1,18 +1,21 @@
 import * as Phaser from "phaser";
-import { PlayerConfig } from "../config/balance";
+import { PlayerConfig, WeaponConfig } from "../config/balance";
 import { InputSystem, IntentInput } from "../systems/InputSystem";
 import { MathUtils } from "../utils/MathUtils";
 import { ScreenWrap } from "../utils/ScreenWrap";
+import { WeaponSystem } from "../systems/WeaponSystem";
+import { BulletManager } from "../systems/BulletManager";
 
 export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
   private config: PlayerConfig;
   private inputSystem: InputSystem;
   private gameBounds: Phaser.Geom.Rectangle;
+  private weaponSystem!: WeaponSystem;
 
   // Physics state
   private angularVelocity: number = 0;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig) {
+  constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig, weaponConfig: WeaponConfig) {
     // Create a simple triangle sprite for the ship
     const graphics = scene.add.graphics();
     graphics.fillStyle(0xffffff);
@@ -43,6 +46,9 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
     // Set initial rotation to point upward (Phaser default is 0 = right)
     this.setRotation(-Math.PI / 2);
 
+    // Initialize weapon system (will be set by GameScene)
+    // Note: WeaponSystem needs BulletManager which is created in GameScene
+
     // Enable game object update
     scene.events.on("update", this.update, this);
   }
@@ -66,14 +72,17 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
     // Handle screen wrapping
     ScreenWrap.wrap(this, this.gameBounds);
 
+    // Update weapon system if available
+    if (this.weaponSystem) {
+      this.weaponSystem.updateWithInput(delta, { x: this.x, y: this.y }, this.rotation, intent);
+    }
+
     // Emit events for audio/VFX
     if (intent.thrust > 0) {
       this.scene.events.emit("ship-thrust", { intensity: intent.thrust });
     }
 
-    if (intent.fire) {
-      this.scene.events.emit("ship-fire");
-    }
+    // Remove the old ship-fire event as weapon system handles firing now
   }
 
   private applyThrust(intensity: number, dt: number): void {
@@ -185,10 +194,45 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
   }
 
   /**
+   * Set the weapon system for this ship
+   */
+  public setWeaponSystem(weaponSystem: WeaponSystem): void {
+    this.weaponSystem = weaponSystem;
+  }
+
+  /**
+   * Get the weapon system
+   */
+  public getWeaponSystem(): WeaponSystem | undefined {
+    return this.weaponSystem;
+  }
+
+  /**
+   * Fire weapon manually (for external systems)
+   */
+  public fireWeapon(): boolean {
+    if (this.weaponSystem && this.weaponSystem.canFire()) {
+      const bullet = this.weaponSystem.fire(this.x, this.y, this.rotation);
+      return bullet !== null;
+    }
+    return false;
+  }
+
+  /**
+   * Get weapon stats for UI
+   */
+  public getWeaponStats() {
+    return this.weaponSystem?.getStats();
+  }
+
+  /**
    * Clean up when ship is destroyed
    */
   public destroy(): void {
     this.scene.events.off("update", this.update, this);
+    if (this.weaponSystem) {
+      this.weaponSystem.destroy();
+    }
     super.destroy();
   }
 }

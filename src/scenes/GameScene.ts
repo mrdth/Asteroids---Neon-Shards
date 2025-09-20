@@ -1,14 +1,18 @@
 import * as Phaser from "phaser";
 import { PlayerShip } from "../gameobjects/PlayerShip";
-import { PLAYER_CONFIG, AsteroidSize } from "../config/balance";
+import { PLAYER_CONFIG, AsteroidSize, WEAPON_CONFIG } from "../config/balance";
 import { AsteroidManager } from "../systems/AsteroidManager";
 import { AsteroidSpawner } from "../systems/AsteroidSpawner";
 import { Asteroid } from "../gameobjects/Asteroid";
+import { BulletManager } from "../systems/BulletManager";
+import { WeaponSystem } from "../systems/WeaponSystem";
 
 export class GameScene extends Phaser.Scene {
   private playerShip!: PlayerShip;
   private asteroidManager!: AsteroidManager;
   private asteroidSpawner!: AsteroidSpawner;
+  private bulletManager!: BulletManager;
+  private weaponSystem!: WeaponSystem;
   private gameLevel: number = 1;
   private playerLives: number = 3;
   private invulnerabilityTime: number = 0;
@@ -60,7 +64,13 @@ export class GameScene extends Phaser.Scene {
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
 
-    this.playerShip = new PlayerShip(this, centerX, centerY, PLAYER_CONFIG);
+    // Initialize weapon systems first
+    this.bulletManager = new BulletManager(this, WEAPON_CONFIG.maxActiveBullets);
+    this.weaponSystem = new WeaponSystem(this, this.bulletManager, WEAPON_CONFIG);
+
+    // Create player ship with weapon config
+    this.playerShip = new PlayerShip(this, centerX, centerY, PLAYER_CONFIG, WEAPON_CONFIG);
+    this.playerShip.setWeaponSystem(this.weaponSystem);
 
     // Initialize asteroid systems
     this.asteroidManager = new AsteroidManager(this);
@@ -69,7 +79,10 @@ export class GameScene extends Phaser.Scene {
     // Set up event listeners for ship events
     this.events.on("ship-destroyed", this.onShipDestroyed, this);
     this.events.on("ship-thrust", this.onShipThrust, this);
-    this.events.on("ship-fire", this.onShipFire, this);
+
+    // Set up weapon event listeners
+    this.events.on("weapon-fired", this.onWeaponFired, this);
+    this.events.on("bullet-asteroid-collision", this.onBulletAsteroidCollision, this);
 
     // Set up asteroid event listeners
     this.asteroidManager.on("asteroid-spawned", this.onAsteroidSpawned, this);
@@ -107,7 +120,7 @@ export class GameScene extends Phaser.Scene {
       color: "#cccccc",
     });
 
-    this.add.text(10, 45, "Space or S: Fire (placeholder)", {
+    this.add.text(10, 45, "Space or S: Fire weapon (4 shots/sec)", {
       fontSize: "12px",
       color: "#cccccc",
     });
@@ -117,7 +130,7 @@ export class GameScene extends Phaser.Scene {
       color: "#cccccc",
     });
 
-    this.add.text(10, 75, "Collision: Ship vs Asteroids enabled", {
+    this.add.text(10, 75, "Weapon System: ACTIVE - Bullets damage asteroids", {
       fontSize: "12px",
       color: "#00ff00",
     });
@@ -133,8 +146,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
+    // Update weapon systems
+    this.bulletManager.update(delta);
+
     // Update asteroid systems
     this.asteroidManager.update(time, delta);
+
+    // Check bullet-asteroid collisions
+    this.bulletManager.checkCollisions(this.asteroidManager.getAllActiveAsteroids());
 
     // Update invulnerability time
     if (this.invulnerabilityTime > 0) {
@@ -163,9 +182,20 @@ export class GameScene extends Phaser.Scene {
     // console.log('Ship thrust:', data.intensity);
   }
 
-  private onShipFire(): void {
-    console.log("Ship fired!");
-    // Later: create bullet, trigger fire sound/animation
+  private onWeaponFired(event: { position: { x: number; y: number }; angle: number; bullet: any }): void {
+    console.log("Weapon fired!");
+    // Later: trigger fire sound/animation, muzzle flash
+  }
+
+  private onBulletAsteroidCollision(event: { bullet: any; asteroid: any; damage: number; position: { x: number; y: number } }): void {
+    // Apply damage to asteroid
+    const isDestroyed = this.asteroidManager.damageAsteroid(event.asteroid, event.damage);
+
+    if (isDestroyed) {
+      console.log(`Asteroid destroyed by bullet! Damage: ${event.damage}`);
+    } else {
+      console.log(`Asteroid hit! Damage: ${event.damage}, Health: ${event.asteroid.getHealth()}/${event.asteroid.getMaxHealth()}`);
+    }
   }
 
   private startWave(): void {
@@ -227,6 +257,9 @@ export class GameScene extends Phaser.Scene {
       undefined,
       this
     );
+
+    // Note: Bullet-asteroid collisions are handled manually in BulletManager.checkCollisions()
+    // This provides better control over collision timing and damage application
   }
 
   private handleShipAsteroidCollision(
@@ -360,5 +393,19 @@ export class GameScene extends Phaser.Scene {
    */
   public getAsteroidSpawner(): AsteroidSpawner {
     return this.asteroidSpawner;
+  }
+
+  /**
+   * Get reference to bullet manager for other systems
+   */
+  public getBulletManager(): BulletManager {
+    return this.bulletManager;
+  }
+
+  /**
+   * Get reference to weapon system for other systems
+   */
+  public getWeaponSystem(): WeaponSystem {
+    return this.weaponSystem;
   }
 }

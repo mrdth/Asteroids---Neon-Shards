@@ -55,3 +55,21 @@ export const ASTEROID_SYSTEM_CONFIG = {
     safeSpawnRadius: 150,
     crackThresholds: [0.25, 0.5, 0.75] // damage percentages when cracks appear
 };
+
+export interface WeaponConfig {
+    fireRateHz: number;        // shots per second (4.0)
+    bulletSpeed: number;       // pixels per second (520)
+    bulletDamage: number;      // damage per shot (20)
+    bulletLifetimeMs: number;  // bullet lifetime in milliseconds (3000)
+    maxActiveBullets: number;  // maximum concurrent bullets (15)
+    muzzleOffset: number;      // distance from ship center to muzzle (16)
+}
+
+export const WEAPON_CONFIG: WeaponConfig = {
+    fireRateHz: 4.0,           // 4 shots per second as per GDD
+    bulletSpeed: 520,          // units/sec for precise targeting
+    bulletDamage: 20,          // base damage per shot
+    bulletLifetimeMs: 3000,    // 3 second lifetime
+    maxActiveBullets: 15,      // performance optimization
+    muzzleOffset: 16           // spawn bullets ahead of ship
+};
