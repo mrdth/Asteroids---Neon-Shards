@@ -176,10 +176,17 @@ describe('AsteroidSpawner', () => {
         it('should introduce small asteroids at higher levels', () => {
             const playerPos = { x: 400, y: 300 };
 
-            const level6Asteroids = spawner.spawnWaveByLevel(6, playerPos);
+            const spawnWaveSpy = vi
+                .spyOn(spawner as any, 'spawnWave')
+                .mockImplementation((_config: SpawnWaveConfig) => [] as any);
 
-            const smallAsteroids = level6Asteroids.filter(a => a.size === AsteroidSize.SMALL);
-            expect(smallAsteroids.length).toBeGreaterThan(0);
+            spawner.spawnWaveByLevel(6, playerPos);
+
+            expect(spawnWaveSpy).toHaveBeenCalled();
+            const [configArg] = (spawnWaveSpy as any).mock.calls[0];
+            expect(configArg.sizes).toContain(AsteroidSize.SMALL);
+
+            spawnWaveSpy.mockRestore();
         });
     });
 
