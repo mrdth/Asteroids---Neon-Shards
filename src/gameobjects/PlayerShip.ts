@@ -1,10 +1,9 @@
 import * as Phaser from "phaser";
-import { PlayerConfig, WeaponConfig } from "../config/balance";
-import { InputSystem, IntentInput } from "../systems/InputSystem";
-import { MathUtils } from "../utils/MathUtils";
-import { ScreenWrap } from "../utils/ScreenWrap";
-import { WeaponSystem } from "../systems/WeaponSystem";
-import { BulletManager } from "../systems/BulletManager";
+import {PlayerConfig} from "../config/balance";
+import {InputSystem} from "../systems/InputSystem";
+import {MathUtils} from "../utils/MathUtils";
+import {ScreenWrap} from "../utils/ScreenWrap";
+import {WeaponSystem} from "../systems/WeaponSystem";
 
 export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
   private config: PlayerConfig;
@@ -19,8 +18,7 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
     scene: Phaser.Scene,
     x: number,
     y: number,
-    config: PlayerConfig,
-    weaponConfig: WeaponConfig
+    config: PlayerConfig
   ) {
     // Create a simple triangle sprite for the ship
     const graphics = scene.add.graphics();
@@ -80,12 +78,12 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
 
     // Update weapon system if available
     if (this.weaponSystem) {
-      this.weaponSystem.updateWithInput(delta, { x: this.x, y: this.y }, this.rotation, intent);
+      this.weaponSystem.updateWithInput(delta, {x: this.x, y: this.y}, this.rotation, intent);
     }
 
     // Emit events for audio/VFX
     if (intent.thrust > 0) {
-      this.scene.events.emit("ship-thrust", { intensity: intent.thrust });
+      this.scene.events.emit("ship-thrust", {intensity: intent.thrust});
     }
 
     // Remove the old ship-fire event as weapon system handles firing now

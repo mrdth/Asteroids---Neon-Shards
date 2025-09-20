@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
-import { ShardConfig } from "../config/balance";
-import { MathUtils } from "../utils/MathUtils";
+import {ShardConfig} from "../config/balance";
+import {MathUtils} from "../utils/MathUtils";
 
 export interface ShardData {
   id: number;
@@ -77,7 +77,7 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
     // Emit shard spawned event
     this.scene.events.emit("shard-spawned", {
       shard: this,
-      position: { x, y },
+      position: {x, y},
       value: this.value,
     });
   }
@@ -126,6 +126,7 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
     magnetForce: number,
     dt: number
   ): void {
+    this._dt = dt;
     const distance = MathUtils.distance(this.x, this.y, playerPosition.x, playerPosition.y);
 
     if (distance <= magnetRadius) {
@@ -197,7 +198,7 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
     this.scene.events.emit("shard-collected", {
       shard: this,
       value: this.value,
-      position: { x: this.x, y: this.y },
+      position: {x: this.x, y: this.y},
     });
 
     this.deactivate();
@@ -225,7 +226,7 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
   private expire(): void {
     this.scene.events.emit("shard-expired", {
       shard: this,
-      position: { x: this.x, y: this.y },
+      position: {x: this.x, y: this.y},
     });
 
     this.deactivate();

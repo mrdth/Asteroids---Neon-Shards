@@ -1,11 +1,6 @@
-import {
-  AsteroidSize,
-  AsteroidConfig,
-  ASTEROID_CONFIGS,
-  ASTEROID_SYSTEM_CONFIG,
-} from "../config/balance";
-import { ScreenWrap } from "../utils/ScreenWrap";
-import { MathUtils } from "../utils/MathUtils";
+import {ASTEROID_CONFIGS, AsteroidConfig, AsteroidSize,} from "../config/balance";
+import {ScreenWrap} from "../utils/ScreenWrap";
+import {MathUtils} from "../utils/MathUtils";
 
 export interface AsteroidData {
   id: number;
@@ -147,7 +142,7 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
         maxHealth: ASTEROID_CONFIGS[nextSize].health,
         velocity: velocities[i],
         angularVelocity: MathUtils.randomFloat(-60, 60),
-        position: { x: this.x, y: this.y },
+        position: {x: this.x, y: this.y},
       });
     }
 
@@ -199,7 +194,7 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
     return velocities;
   }
 
-  public update(time: number, delta: number): void {
+  public update(): void {
     if (!this.isActive) return;
 
     // Handle screen wrapping
@@ -259,9 +254,9 @@ export class Asteroid extends Phaser.Physics.Arcade.Sprite {
       size: this.size,
       health: this.currentHealth,
       maxHealth: this.maxHealth,
-      velocity: { x: this.body!.velocity.x, y: this.body!.velocity.y },
+      velocity: {x: this.body!.velocity.x, y: this.body!.velocity.y},
       angularVelocity: this.body!.angularVelocity,
-      position: { x: this.x, y: this.y },
+      position: {x: this.x, y: this.y},
     };
   }
 

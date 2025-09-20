@@ -1,12 +1,12 @@
 import * as Phaser from "phaser";
-import { PlayerShip } from "../gameobjects/PlayerShip";
-import { PLAYER_CONFIG, AsteroidSize, WEAPON_CONFIG, SHARD_CONFIG } from "../config/balance";
-import { AsteroidManager } from "../systems/AsteroidManager";
-import { AsteroidSpawner } from "../systems/AsteroidSpawner";
-import { Asteroid } from "../gameobjects/Asteroid";
-import { BulletManager } from "../systems/BulletManager";
-import { WeaponSystem } from "../systems/WeaponSystem";
-import { ShardManager } from "../systems/ShardManager";
+import {PlayerShip} from "../gameobjects/PlayerShip";
+import {PLAYER_CONFIG, SHARD_CONFIG, WEAPON_CONFIG} from "../config/balance";
+import {AsteroidManager} from "../systems/AsteroidManager";
+import {AsteroidSpawner} from "../systems/AsteroidSpawner";
+import {Asteroid} from "../gameobjects/Asteroid";
+import {BulletManager} from "../systems/BulletManager";
+import {WeaponSystem} from "../systems/WeaponSystem";
+import {ShardManager} from "../systems/ShardManager";
 
 export class GameScene extends Phaser.Scene {
   private playerShip!: PlayerShip;
@@ -26,7 +26,7 @@ export class GameScene extends Phaser.Scene {
   private waveInProgress = false;
 
   constructor() {
-    super({ key: "GameScene" });
+    super({key: "GameScene"});
   }
 
   preload(): void {
@@ -72,7 +72,7 @@ export class GameScene extends Phaser.Scene {
     this.weaponSystem = new WeaponSystem(this, this.bulletManager, WEAPON_CONFIG);
 
     // Create player ship with weapon config
-    this.playerShip = new PlayerShip(this, centerX, centerY, PLAYER_CONFIG, WEAPON_CONFIG);
+    this.playerShip = new PlayerShip(this, centerX, centerY, PLAYER_CONFIG);
     this.playerShip.setWeaponSystem(this.weaponSystem);
 
     // Initialize asteroid systems
@@ -164,7 +164,7 @@ export class GameScene extends Phaser.Scene {
     this.asteroidManager.update(time, delta);
 
     // Update shard systems
-    this.shardManager.update(delta, { x: this.playerShip.x, y: this.playerShip.y });
+    this.shardManager.update(delta, {x: this.playerShip.x, y: this.playerShip.y});
 
     // Check bullet-asteroid collisions
     this.bulletManager.checkCollisions(this.asteroidManager.getAllActiveAsteroids());
@@ -227,7 +227,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private startWave(): void {
-    const playerPos = { x: this.playerShip.x, y: this.playerShip.y };
+    const playerPos = {x: this.playerShip.x, y: this.playerShip.y};
     const spawnedAsteroids = this.asteroidSpawner.spawnWaveByLevel(this.gameLevel, playerPos);
 
     // Mark wave as in progress
