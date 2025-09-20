@@ -17,6 +17,7 @@ export class GameScene extends Phaser.Scene {
   private playerLives: number = 3;
   private invulnerabilityTime: number = 0;
   private livesText!: Phaser.GameObjects.Text;
+  private waveInProgress: boolean = false;
 
   constructor() {
     super({ key: "GameScene" });
@@ -170,8 +171,8 @@ export class GameScene extends Phaser.Scene {
       this.playerShip.setVisible(true);
     }
 
-    // Check for wave completion
-    if (this.asteroidManager.getActiveCount() === 0) {
+    // Check for wave completion (only if wave is in progress)
+    if (this.waveInProgress && this.asteroidManager.getActiveCount() === 0) {
       this.onWaveComplete();
     }
   }
@@ -209,6 +210,9 @@ export class GameScene extends Phaser.Scene {
       playerPos,
     );
 
+    // Mark wave as in progress
+    this.waveInProgress = true;
+
     console.log(
       `Wave ${this.gameLevel} started with ${spawnedAsteroids.length} asteroids`,
     );
@@ -216,6 +220,10 @@ export class GameScene extends Phaser.Scene {
 
   private onWaveComplete(): void {
     console.log(`Wave ${this.gameLevel} completed!`);
+
+    // Mark wave as no longer in progress to prevent multiple completions
+    this.waveInProgress = false;
+
     this.gameLevel++;
 
     // Wait a moment before starting next wave
