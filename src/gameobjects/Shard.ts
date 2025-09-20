@@ -135,12 +135,23 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
 
             // Apply force proportional to distance (closer = stronger attraction)
             const forceMultiplier = 1 - (distance / magnetRadius);
-            const scaledForce = magnetForce * forceMultiplier * (dt / 1000);
+            const scaledForce = magnetForce * forceMultiplier;
 
             const body = this.body as Phaser.Physics.Arcade.Body;
-            body.setAcceleration(
-                forceVector.x * scaledForce,
-                forceVector.y * scaledForce
+
+            // Apply velocity directly toward player for immediate attraction effect
+            const attractionVelocity = {
+                x: forceVector.x * scaledForce,
+                y: forceVector.y * scaledForce
+            };
+
+            // Blend with existing velocity to maintain smooth movement
+            const currentVel = body.velocity;
+            const blendFactor = 0.7; // How much to favor attraction vs current velocity
+
+            body.setVelocity(
+                currentVel.x * (1 - blendFactor) + attractionVelocity.x * blendFactor,
+                currentVel.y * (1 - blendFactor) + attractionVelocity.y * blendFactor
             );
 
             // Change tint to indicate attraction
@@ -149,10 +160,6 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
             if (this.isBeingAttracted) {
                 this.isBeingAttracted = false;
                 this.attractionTarget = null;
-
-                // Reset acceleration
-                const body = this.body as Phaser.Physics.Arcade.Body;
-                body.setAcceleration(0, 0);
 
                 // Reset tint
                 this.setTint(0x00ffff); // Back to cyan
@@ -203,7 +210,6 @@ export class Shard extends Phaser.Physics.Arcade.Sprite {
 
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(0, 0);
-        body.setAcceleration(0, 0);
 
         // Reset properties
         this.setAlpha(1);

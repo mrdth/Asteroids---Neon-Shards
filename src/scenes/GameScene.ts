@@ -411,8 +411,8 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText(`Score: ${this.playerScore}`);
     this.shardsText.setText(`Shards: ${this.shardsCollected}`);
 
-    // Play collection sound (optional)
-    // this.sound.play("shard-collect");
+    // Play collection sound
+    this.sound.play("shard-collect");
 
     console.log(`Shard collected! +${event.value} points. Total: ${this.playerScore}`);
   }
