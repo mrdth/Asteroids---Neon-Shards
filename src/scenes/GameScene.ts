@@ -53,6 +53,9 @@ export class GameScene extends Phaser.Scene {
       endFrame: 4,
     });
 
+    // Load background image
+    this.load.image("background", "assets/images/background.png");
+
     // Load weapon assets
     this.load.image("bullet-neon", "assets/sprites/bullet-neon.png");
     this.load.audio("laser-shot", "assets/audio/laser-shot.ogg");
@@ -66,6 +69,9 @@ export class GameScene extends Phaser.Scene {
     // Create player ship at center of screen
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
+
+    // Set background image
+    // this.add.image(centerX, centerY, 'background'); // Disabled until we have transparent sprites for asteroids, etc
 
     // Initialize weapon systems first
     this.bulletManager = new BulletManager(this, WEAPON_CONFIG.maxActiveBullets);
